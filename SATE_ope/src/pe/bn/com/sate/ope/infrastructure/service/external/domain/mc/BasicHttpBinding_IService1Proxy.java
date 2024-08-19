@@ -54,7 +54,7 @@ public class BasicHttpBinding_IService1Proxy{
         }
 
         private void initCommon() {
-            _proxy = _service.getBasicHttpBindingIService1();
+            _proxy = _service.getBasicHttpsBindingIService1();
         }
 
         public pe.bn.com.sate.ope.infrastructure.service.external.domain.mc.IService1 getProxy() {
@@ -173,6 +173,29 @@ public class BasicHttpBinding_IService1Proxy{
 
     public String reseteoPin(String xml) {
         return _getDescriptor().getProxy().reseteoPin(xml);
+    }
+    public String validacionPin(String xml) {
+        return _getDescriptor().getProxy().validacionPin(xml);
+    }
+
+    public String informacionTarjeta(String xml) {
+        return _getDescriptor().getProxy().informacionTarjeta(xml);
+    }
+
+    public String generacionCVV2(String xml) {
+        return _getDescriptor().getProxy().generacionCVV2(xml);
+    }
+
+    public String consultaDatosTarjeta(String xml) {
+        return _getDescriptor().getProxy().consultaDatosTarjeta(xml);
+    }
+
+    public String consultaMovimientosExpediente(String xml) {
+        return _getDescriptor().getProxy().consultaMovimientosExpediente(xml);
+    }
+
+    public String consultaDatosExpediente(String xml) {
+        return _getDescriptor().getProxy().consultaDatosExpediente(xml);
     }
 
 }
