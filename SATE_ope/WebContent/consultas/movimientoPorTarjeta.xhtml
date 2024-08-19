@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/plantilla/plantilla.xhtml">
+
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h2>MOVIMIENTOS POR TARJETA</h2>
+
+		<h:form id="formMovimientoTarjeta">
+			<center>
+				<p:panel style="margin:30px 80px 30px 80px;padding:20px;">
+					<h:panelGrid style="width:80%;text-align:center;">
+
+						<p:panelGrid columns="4" style="margin:0 auto 10px;">
+<!-- 							<h:outputText value="Desde *" /> -->
+<!-- 							<p:calendar id="itFechaInicio" locale="es" readonlyInput="true" -->
+<!-- 								navigator="true" required="true" -->
+<!-- 								requiredMessage="Seleccione una fecha de nacimiento" -->
+<!-- 								value="#{consultarMovimientosController.consultarMovimientosModel.fechaInicio}" -->
+<!-- 								pattern="dd/MM/yyyy" mask="true"> -->
+<!-- 							</p:calendar> -->
+<!-- 							<h:outputText value="hasta *" /> -->
+<!-- 							<p:calendar id="itFechaFin" locale="es" readonlyInput="true" -->
+<!-- 								navigator="true" required="true" -->
+<!-- 								requiredMessage="Seleccione una fecha de nacimiento" -->
+<!-- 								value="#{consultarMovimientosController.consultarMovimientosModel.fechaFin}" -->
+<!-- 								pattern="dd/MM/yyyy" mask="true"> -->
+<!-- 							</p:calendar> -->
+
+							<h:outputText value="Nro.tarjeta *" />
+							<p:inputText id="numDocumento" required="true" maxlength="16"
+								onkeypress="javascript:return jsValidarKey(event,/[0-9]/);"
+								requiredMessage="Ingrese el número de tarjeta"
+								value="#{consultarMovimientosController.consultarMovimientosModel.numeroTarjeta}"
+								validatorMessage="el número de tarjeta debe tener 16 dígitos">
+								<f:validateLength minimum="16" />
+							</p:inputText>
+						</p:panelGrid>
+
+						<p:commandButton id="buscarMovimientos" value="Buscar"
+							styleClass="btnGrande"
+							actionListener="#{consultarMovimientosController.buscarMovimientos()}"
+							process="@this numDocumento"
+							onstart="PF('statusDialog').show()"
+							oncomplete="PF('statusDialog').hide()"
+							update="formMovimientoTarjeta:pgResultado" />
+
+						<p:messages id="msgs" autoUpdate="true" showDetail="true"
+							showSummary="false" closable="true" />
+
+						<div class="dashed"></div>
+
+						<h:panelGrid id="pgResultado" style="width:100%;">
+							<p:dataTable var="movimiento" id="dtSolicitudes"
+								rendered="#{consultarMovimientosController.consultarMovimientosModel.existenMovimientosTarjeta()}"
+								value="#{consultarMovimientosController.consultarMovimientosModel.movimientosTarjeta}"
+								rowKey="#{movimiento.id}"
+								style="table-layout: fixed;margin-top:10px;width:100%;"
+								rowIndexVar="index">
+								<p:column headerText="Nro." style="text-align: center">
+									<h:outputText value="#{movimiento.id}" />
+								</p:column>
+								<p:column headerText="Fecha operación"
+									style="text-align: center">
+									<h:outputText value="#{movimiento.fecha}">
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm:ss a" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Descripción operación"
+									style="text-align: center">
+									<h:outputText value="#{movimiento.descripcionTransaccion}" />
+								</p:column>
+								<p:column headerText="Moneda" style="text-align: center">
+									<h:outputText
+										value="#{consultarMovimientosController.consultarMovimientosModel.tipoMonedaLetras(movimiento.moneda)}" />
+								</p:column>
+								<p:column headerText="Monto" style="text-align: center">
+									<h:outputText value="#{movimiento.monto}" />
+								</p:column>
+								<p:column headerText="Tipo Monto" style="text-align: center">
+									<h:outputText
+										value="#{consultarMovimientosController.consultarMovimientosModel.tipoMontoLetras(movimiento.tipoMonto)}" />
+								</p:column>
+								<p:column headerText="Tipo tarjeta" style="text-align: center">
+									<h:outputText
+										value="#{consultarMovimientosController.consultarMovimientosModel.tipoTarjetaLetras(movimiento.tipoTarjeta)}" />
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+
+					</h:panelGrid>
+
+				</p:panel>
+			</center>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
