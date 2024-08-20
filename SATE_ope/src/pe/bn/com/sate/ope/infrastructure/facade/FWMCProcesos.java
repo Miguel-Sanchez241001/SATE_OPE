@@ -47,9 +47,9 @@ public class FWMCProcesos {
 	public List<MovimientoTarjeta> consultarMovimientosPorTarjeta(
 			String numTarjeta) throws ServiceException {
 			// 	TODO CAMBIO de if para que envie para pruebas y no verifique 
-		// if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
+		 if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
 
-		if (true) {
+		//if (true) {
 			// TODO DATOS PARA SERVICIO WS IZIPAY
 			String codigoEmisor = parametros.getCodigoEmisorMc();
 			String codigoUsuario = parametros.getCodigoUsuarioMc();
@@ -99,15 +99,17 @@ public class FWMCProcesos {
 				System.out.println(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
-
-				JAXBContext jc = JAXBContext
-						.newInstance(ConsultaMovimientos.class);
-				Unmarshaller unmarshaller = jc.createUnmarshaller();
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
+				/*	JAXBContext jc = JAXBContext
+						.newInstance(ConsultaMovimientos.class);
+				Unmarshaller unmarshaller = jc.createUnmarshaller();
+				
 				ConsultaMovimientos consultaMovimientos = (ConsultaMovimientos) unmarshaller
-						.unmarshal(reader);
+						.unmarshal(reader);*/
+				
+				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(reader,ConsultaMovimientos.class);
 				System.out.println(consultaMovimientos.toString());
 
 				if (consultaMovimientos.getCodRespuesta().equals("0000")) {
@@ -129,7 +131,7 @@ public class FWMCProcesos {
 			}
 		} else {
 			throw new InternalServiceException(
-					"Número de tarjeta no encontrada");
+					"NÃºmero de tarjeta no encontrada");
 		}
 
 	}
@@ -233,14 +235,11 @@ public class FWMCProcesos {
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 
-			JAXBContext jc = JAXBContext.newInstance(ModificacionTarjeta.class);
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 			StringReader reader = new StringReader(response.substring(
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
-			ModificacionTarjeta modificacionTarjeta = (ModificacionTarjeta) unmarshaller
-					.unmarshal(reader);
+			ModificacionTarjeta modificacionTarjeta = convertirXMLAObjeto(reader,ModificacionTarjeta.class);
 
 			return modificacionTarjeta;
 		} catch (Exception ex) {
@@ -293,14 +292,12 @@ public class FWMCProcesos {
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 
-				JAXBContext jc = JAXBContext.newInstance(ConsultaSaldos.class);
-				Unmarshaller unmarshaller = jc.createUnmarshaller();
+				 
 
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
-				ConsultaSaldos consultaSaldos = (ConsultaSaldos) unmarshaller
-						.unmarshal(reader);
+				ConsultaSaldos consultaSaldos = convertirXMLAObjeto(reader,ConsultaSaldos.class);
 
 				System.out.println(consultaSaldos.toString());
 
@@ -320,28 +317,28 @@ public class FWMCProcesos {
 			}
 		} else {
 			throw new ExternalServiceMCProcesosException(
-					"Número de tarjeta no encontrada");
+					"NÃºmero de tarjeta no encontrada");
 		}
 	}
 
 	
 	public void informacionDeTarjeta(int idTarjeta) {
-        logger.info("Iniciando consulta de información de tarjeta.");
+        logger.info("Iniciando consulta de informaciÃ³n de tarjeta.");
         
         try {
-            // Implementación de la lógica para consultar la información de la tarjeta
-            logger.info("Consultando información de la tarjeta.");
+            // ImplementaciÃ³n de la lÃ³gica para consultar la informaciÃ³n de la tarjeta
+            logger.info("Consultando informaciÃ³n de la tarjeta.");
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que consulta y procesa la información de la tarjeta
+            // SimulaciÃ³n de la lÃ³gica de negocio
+            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa la informaciÃ³n de la tarjeta
 
-            logger.info("Consulta de información de tarjeta finalizada exitosamente.");
+            logger.info("Consulta de informaciÃ³n de tarjeta finalizada exitosamente.");
 
         } catch (Exception ex) {
-            logger.error("Error al consultar información de tarjeta", ex);
-            // Manejo de excepciones específico si es necesario
+            logger.error("Error al consultar informaciÃ³n de tarjeta", ex);
+            // Manejo de excepciones especÃ­fico si es necesario
         } finally {
-            logger.info("Finalizando consulta de información de tarjeta");
+            logger.info("Finalizando consulta de informaciÃ³n de tarjeta");
         }
     }
 
@@ -349,17 +346,17 @@ public class FWMCProcesos {
         logger.info("Iniciando bloqueo de tarjeta.");
         
         try {
-            // Implementación de la lógica para bloquear la tarjeta
+            // ImplementaciÃ³n de la lÃ³gica para bloquear la tarjeta
             logger.info("Bloqueando tarjeta.");
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que realiza el bloqueo de la tarjeta
+            // SimulaciÃ³n de la lÃ³gica de negocio
+            // AquÃ­ irÃ­a el cÃ³digo que realiza el bloqueo de la tarjeta
 
             logger.info("Bloqueo de tarjeta finalizado exitosamente.");
 
         } catch (Exception ex) {
             logger.error("Error al bloquear la tarjeta", ex);
-            // Manejo de excepciones específico si es necesario
+            // Manejo de excepciones especÃ­fico si es necesario
         } finally {
             logger.info("Finalizando bloqueo de tarjeta");
         }
@@ -369,17 +366,17 @@ public class FWMCProcesos {
         logger.info("Iniciando consulta de movimientos por expediente.");
         
         try {
-            // Implementación de la lógica para consultar movimientos por expediente
+            // ImplementaciÃ³n de la lÃ³gica para consultar movimientos por expediente
             logger.info("Consultando movimientos para el expediente.");
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que consulta y procesa los movimientos del expediente
+            // SimulaciÃ³n de la lÃ³gica de negocio
+            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa los movimientos del expediente
 
             logger.info("Consulta de movimientos por expediente finalizada exitosamente.");
 
         } catch (Exception ex) {
             logger.error("Error al consultar movimientos por expediente", ex);
-            // Manejo de excepciones específico si es necesario
+            // Manejo de excepciones especÃ­fico si es necesario
         } finally {
             logger.info("Finalizando consulta de movimientos por expediente");
         }
@@ -389,46 +386,50 @@ public class FWMCProcesos {
         logger.info("Iniciando consulta de datos por expediente.");
         
         try {
-            // Implementación de la lógica para consultar datos por expediente
+            // ImplementaciÃ³n de la lÃ³gica para consultar datos por expediente
             logger.info("Consultando datos para el expediente.");
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que consulta y procesa los datos del expediente
+            // SimulaciÃ³n de la lÃ³gica de negocio
+            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa los datos del expediente
 
             logger.info("Consulta de datos por expediente finalizada exitosamente.");
 
         } catch (Exception ex) {
             logger.error("Error al consultar datos por expediente", ex);
-            // Manejo de excepciones específico si es necesario
+            // Manejo de excepciones especÃ­fico si es necesario
         } finally {
             logger.info("Finalizando consulta de datos por expediente");
         }
     }
 
     public void actualizacionDeDatos(int idTarjeta, String nuevosDatos) {
-        logger.info("Iniciando actualización de datos para la tarjeta.");
+        logger.info("Iniciando actualizaciÃ³n de datos para la tarjeta.");
         
         try {
-            // Implementación de la lógica para actualizar datos de la tarjeta
+            // ImplementaciÃ³n de la lÃ³gica para actualizar datos de la tarjeta
             logger.info("Actualizando datos para la tarjeta.");
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que actualiza los datos de la tarjeta
+            // SimulaciÃ³n de la lÃ³gica de negocio
+            // AquÃ­ irÃ­a el cÃ³digo que actualiza los datos de la tarjeta
 
-            logger.info("Actualización de datos finalizada exitosamente.");
+            logger.info("ActualizaciÃ³n de datos finalizada exitosamente.");
 
         } catch (Exception ex) {
             logger.error("Error al actualizar datos de la tarjeta", ex);
-            // Manejo de excepciones específico si es necesario
+            // Manejo de excepciones especÃ­fico si es necesario
         } finally {
-            logger.info("Finalizando actualización de datos para la tarjeta");
+            logger.info("Finalizando actualizaciÃ³n de datos para la tarjeta");
         }
     }
 
 	
 	
 	
-	
+    public <T> T convertirXMLAObjeto(StringReader reader2, Class<T> class1) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(class1);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        return (T) unmarshaller.unmarshal(reader2);
+    }
 	
 	
 	
