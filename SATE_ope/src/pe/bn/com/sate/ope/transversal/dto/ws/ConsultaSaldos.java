@@ -3,11 +3,7 @@ package pe.bn.com.sate.ope.transversal.dto.ws;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import pe.bn.com.sate.ope.transversal.dto.sate.MovimientoTarjeta;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
+ 
 
 @XmlRootElement(name = "Consulta_Saldos")
 public class ConsultaSaldos {

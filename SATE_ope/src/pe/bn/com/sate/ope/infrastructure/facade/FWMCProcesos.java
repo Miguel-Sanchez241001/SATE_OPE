@@ -1,13 +1,19 @@
 package pe.bn.com.sate.ope.infrastructure.facade;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.SOAPFaultException;
+import com.ibm.wsspi.webservices.Constants;  // Importa las constantes relevantes
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +23,7 @@ import pe.bn.com.sate.ope.application.view.AutorizarSolicitudesController;
 import pe.bn.com.sate.ope.infrastructure.exception.ExternalServiceMCProcesosException;
 import pe.bn.com.sate.ope.infrastructure.exception.InternalServiceException;
 import pe.bn.com.sate.ope.infrastructure.exception.ServiceException;
-import pe.bn.com.sate.ope.infrastructure.service.external.domain.mc.BasicHttpBinding_IService1Proxy;
+import pe.bn.com.sate.ope.infrastructure.service.external.domain.mc.BasicHttpsBinding_IService1Proxy;
 import pe.bn.com.sate.ope.persistence.mapper.internal.ParametroMapper;
 import pe.bn.com.sate.ope.persistence.mapper.internal.TarjetaMapper;
 import pe.bn.com.sate.ope.transversal.dto.sate.ModificacionTarjeta;
@@ -25,10 +31,12 @@ import pe.bn.com.sate.ope.transversal.dto.sate.MovimientoTarjeta;
 import pe.bn.com.sate.ope.transversal.dto.sate.SaldoTarjeta;
 import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaMovimientos;
 import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaSaldos;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOInformacionTarjeta;
 import pe.bn.com.sate.ope.transversal.util.ServicioWebUtil;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.componentes.Parametros;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
+import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesWS;
 
 @Component
 public class FWMCProcesos {
@@ -47,9 +55,9 @@ public class FWMCProcesos {
 	public List<MovimientoTarjeta> consultarMovimientosPorTarjeta(
 			String numTarjeta) throws ServiceException {
 			// 	TODO CAMBIO de if para que envie para pruebas y no verifique 
-		// if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
+		 if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
 
-		if (true) {
+		//if (true) {
 			// TODO DATOS PARA SERVICIO WS IZIPAY
 			String codigoEmisor = parametros.getCodigoEmisorMc();
 			String codigoUsuario = parametros.getCodigoUsuarioMc();
@@ -85,7 +93,7 @@ public class FWMCProcesos {
 
 			System.out.println(request);
 			try {
-				BasicHttpBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpBinding_IService1Proxy();
+				BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
 				ServicioWebUtil.cambiarTiempoEspera(parametros
 						.getConexionTiempo(), parametros.getRespuestaTiempo(),
 						(BindingProvider) basicHttpBinding_IService1Proxy
@@ -99,15 +107,17 @@ public class FWMCProcesos {
 				System.out.println(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
-
-				JAXBContext jc = JAXBContext
-						.newInstance(ConsultaMovimientos.class);
-				Unmarshaller unmarshaller = jc.createUnmarshaller();
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
+				/*	JAXBContext jc = JAXBContext
+						.newInstance(ConsultaMovimientos.class);
+				Unmarshaller unmarshaller = jc.createUnmarshaller();
+				
 				ConsultaMovimientos consultaMovimientos = (ConsultaMovimientos) unmarshaller
-						.unmarshal(reader);
+						.unmarshal(reader);*/
+				
+				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(reader,ConsultaMovimientos.class);
 				System.out.println(consultaMovimientos.toString());
 
 				if (consultaMovimientos.getCodRespuesta().equals("0000")) {
@@ -223,7 +233,7 @@ public class FWMCProcesos {
 			System.out.println("request: " + request);
 			String response = "";
 
-			BasicHttpBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpBinding_IService1Proxy();
+			BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
 			response = basicHttpBinding_IService1Proxy
 					.modificacionTarjetas(request);
 
@@ -233,14 +243,11 @@ public class FWMCProcesos {
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 
-			JAXBContext jc = JAXBContext.newInstance(ModificacionTarjeta.class);
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 			StringReader reader = new StringReader(response.substring(
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
-			ModificacionTarjeta modificacionTarjeta = (ModificacionTarjeta) unmarshaller
-					.unmarshal(reader);
+			ModificacionTarjeta modificacionTarjeta = convertirXMLAObjeto(reader,ModificacionTarjeta.class);
 
 			return modificacionTarjeta;
 		} catch (Exception ex) {
@@ -282,7 +289,7 @@ public class FWMCProcesos {
 
 			System.out.println(request);
 			try {
-				BasicHttpBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpBinding_IService1Proxy();
+				BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
 				response = basicHttpBinding_IService1Proxy
 						.consultaSaldos(request);
 
@@ -293,14 +300,12 @@ public class FWMCProcesos {
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 
-				JAXBContext jc = JAXBContext.newInstance(ConsultaSaldos.class);
-				Unmarshaller unmarshaller = jc.createUnmarshaller();
+				 
 
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
-				ConsultaSaldos consultaSaldos = (ConsultaSaldos) unmarshaller
-						.unmarshal(reader);
+				ConsultaSaldos consultaSaldos = convertirXMLAObjeto(reader,ConsultaSaldos.class);
 
 				System.out.println(consultaSaldos.toString());
 
@@ -325,25 +330,63 @@ public class FWMCProcesos {
 	}
 
 	
-	public void informacionDeTarjeta(int idTarjeta) {
-        logger.info("Iniciando consulta de información de tarjeta.");
-        
-        try {
-            // Implementación de la lógica para consultar la información de la tarjeta
-            logger.info("Consultando información de la tarjeta.");
+	public DTOInformacionTarjeta informacionDeTarjeta(int idTarjeta) throws SocketTimeoutException, IOException {
+	    logger.info("Iniciando consulta de información de tarjeta.");
+	    DTOInformacionTarjeta response = null;
+	    String responseData = null;
 
-            // Simulación de la lógica de negocio
-            // Aquí iría el código que consulta y procesa la información de la tarjeta
+	    try {
+	        // Preparación de la solicitud
+	        Map<String, String> inputRequest =  ConstantesWS.getInformacionTarjetaMap();
+	        inputRequest.put(ConstantesWS.COD_EMISOR, "971");
+	        inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
+	        inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
+	        inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
+	        inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
+	        inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
+	        inputRequest.put(ConstantesWS.COMERCIO, "9999999");
+	        inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+	        inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+	        inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
+	        inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
+	        inputRequest.put(ConstantesWS.RESERVADO, "");
+	        String request =  ConstantesWS.generarXml(ConstantesWS.INFORMACION_TARJETA_XML, inputRequest);
+	        logger.info("Request generado: " + request);
 
-            logger.info("Consulta de información de tarjeta finalizada exitosamente.");
+	        // Configuración del cliente SOAP
+	        BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
 
-        } catch (Exception ex) {
-            logger.error("Error al consultar información de tarjeta", ex);
-            // Manejo de excepciones específico si es necesario
-        } finally {
-            logger.info("Finalizando consulta de información de tarjeta");
-        }
-    }
+	        // Configurar tiempo de conexión y tiempo de lectura
+	        BindingProvider bindingProvider = (BindingProvider) basicHttpBinding_IService1Proxy._getDescriptor().getProxy();
+	        Map<String, Object> requestContext = bindingProvider.getRequestContext();
+ 
+	     // Configuración del timeout
+	   //  requestContext.put("com.ibm.websphere.webservices.connectionTimeout", 10000); // 10 segundos
+	     //requestContext.put("com.ibm.websphere.webservices.responseTimeout", 20000);   // 20 segundos
+
+	     // Desactivación de políticas de seguridad predeterminadas en IBM WebSphere
+	     requestContext.put("com.ibm.ws.webservices.security.disableDefaultPolicyBinding", Boolean.TRUE);
+	        logger.info("Realizando llamada al servicio SOAP...");
+
+	        // Ejecución de la llamada al servicio
+	        responseData = basicHttpBinding_IService1Proxy.informacionTarjeta(request);
+	        logger.info("Response recibido: " + responseData);
+
+	        // Procesamiento de la respuesta
+	        StringReader reader = new StringReader(responseData);
+	        response = convertirXMLAObjeto(reader, DTOInformacionTarjeta.class);
+	        logger.info("Objeto de respuesta: " + response);
+
+	    } catch (SOAPFaultException e) {
+	        logger.error("Error SOAP: Ocurrió un error en el servicio web SOAP", e);
+	    } catch (WebServiceException e) {
+	        logger.error("Error de Servicio Web: Ocurrió un error en la comunicación con el servicio web", e);
+	    } catch (Exception ex) {
+	        logger.error("Error general al consultar información de tarjeta", ex);
+	    }
+	    
+	    return response;
+	}
 
     public void bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) {
         logger.info("Iniciando bloqueo de tarjeta.");
@@ -428,18 +471,11 @@ public class FWMCProcesos {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    public <T> T convertirXMLAObjeto(StringReader reader, Class<T> class1) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(class1);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        return (T) unmarshaller.unmarshal(reader);
+    }
 	
 	
 	

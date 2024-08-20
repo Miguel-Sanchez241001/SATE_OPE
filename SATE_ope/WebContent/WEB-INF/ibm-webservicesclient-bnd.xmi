@@ -17,5 +17,6 @@
   </serviceRefs>
   <serviceRefs xmi:id="ServiceRef_1541608828527" serviceRefLink="service/Service1">
     <portQnameBindings xmi:id="PortQnameBinding_1541608828527" portQnameNamespaceLink="http://tempuri.org/" portQnameLocalNameLink="BasicHttpBinding_IService1" overriddenEndpointURI="https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc"/>
+    <portQnameBindings xmi:id="PortQnameBinding_1724184834774" portQnameNamespaceLink="http://tempuri.org/" portQnameLocalNameLink="BasicHttpsBinding_IService1" overriddenEndpointURI="https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc"/>
   </serviceRefs>
 </com.ibm.etools.webservice.wscbnd:ClientBinding>

@@ -12,7 +12,7 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
 
-public class BasicHttpBinding_IService1Proxy{
+public class BasicHttpsBinding_IService1Proxy{
 
     protected Descriptor _descriptor;
 
@@ -68,7 +68,7 @@ public class BasicHttpBinding_IService1Proxy{
 
         public Dispatch<Source> getDispatch() {
             if (_dispatch == null ) {
-                QName portQName = new QName("http://tempuri.org/", "BasicHttpBinding_IService1");
+                QName portQName = new QName("http://tempuri.org/", "BasicHttpsBinding_IService1");
                 _dispatch = _service.createDispatch(portQName, Source.class, Service.Mode.MESSAGE);
 
                 String proxyEndpointUrl = getEndpoint();
@@ -101,12 +101,12 @@ public class BasicHttpBinding_IService1Proxy{
         }
     }
 
-    public BasicHttpBinding_IService1Proxy() {
+    public BasicHttpsBinding_IService1Proxy() {
         _descriptor = new Descriptor();
         _descriptor.setMTOMEnabled(false);
     }
 
-    public BasicHttpBinding_IService1Proxy(URL wsdlLocation, QName serviceName) {
+    public BasicHttpsBinding_IService1Proxy(URL wsdlLocation, QName serviceName) {
         _descriptor = new Descriptor(wsdlLocation, serviceName);
         _descriptor.setMTOMEnabled(false);
     }
@@ -167,15 +167,16 @@ public class BasicHttpBinding_IService1Proxy{
         return _getDescriptor().getProxy().cambioPin(xml);
     }
 
+    public String validacionPin(String xml) {
+        return _getDescriptor().getProxy().validacionPin(xml);
+    }
+
     public String autoreversa(String xml) {
         return _getDescriptor().getProxy().autoreversa(xml);
     }
 
     public String reseteoPin(String xml) {
         return _getDescriptor().getProxy().reseteoPin(xml);
-    }
-    public String validacionPin(String xml) {
-        return _getDescriptor().getProxy().validacionPin(xml);
     }
 
     public String informacionTarjeta(String xml) {

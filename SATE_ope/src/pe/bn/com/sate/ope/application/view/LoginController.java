@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.SocketTimeoutException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Controller;
 import pe.bn.com.sate.ope.application.model.LoginModel;
 import pe.bn.com.sate.ope.infrastructure.exception.InternalServiceException;
 import pe.bn.com.sate.ope.infrastructure.exception.ServiceException;
+import pe.bn.com.sate.ope.infrastructure.facade.FWMCProcesos;
 import pe.bn.com.sate.ope.infrastructure.facade.InterfaceGatewayFacade;
 import pe.bn.com.sate.ope.infrastructure.service.external.domain.novatronic.captcha.Captcha;
 import pe.bn.com.sate.ope.infrastructure.service.internal.CaptchaService;
@@ -54,7 +56,8 @@ public class LoginController implements PhaseListener, Serializable {
 
     @Autowired
     private InterfaceGatewayFacade fWInterfaceGateway;
-
+    private @Autowired
+	FWMCProcesos fwmcProcesos;
     /**
      * Inicializa el modelo de login y genera un captcha.
      */
@@ -86,6 +89,15 @@ public class LoginController implements PhaseListener, Serializable {
             UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, "Captcha no coincide", "");
         }
         logger.info("[loginController] - Fin método iniciarSesion");
+        try {
+			fwmcProcesos.informacionDeTarjeta(1);
+		} catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**
