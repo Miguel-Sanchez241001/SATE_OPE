@@ -45,22 +45,26 @@ public class DTOInformacionTarjeta {
     @XmlElement(name = "DescRespuesta")
     private String descRespuesta;
 
-    // Getters y Setters (opcional si se usan solo para JAXB)
+    // Constructor sin argumentos
+    public DTOInformacionTarjeta() {
+    }
+
+    // Getters y Setters
     
     @Override
-	public String toString() {
-		return "DTOInformacionTarjeta [codEmisor=" + codEmisor
-				+ ", codUsuario=" + codUsuario + ", numTerminal=" + numTerminal
-				+ ", numTarjeta=" + numTarjeta + ", numReferencia="
-				+ numReferencia + ", fechaExpiracion=" + fechaExpiracion
-				+ ", comercio=" + comercio + ", fechaTxnTerminal="
-				+ fechaTxnTerminal + ", horaTxnTerminal=" + horaTxnTerminal
-				+ ", reservado=" + reservado + ", idTransaccion="
-				+ idTransaccion + ", codRespuesta=" + codRespuesta
-				+ ", descRespuesta=" + descRespuesta + "]";
-	}
+    public String toString() {
+        return "DTOInformacionTarjeta [codEmisor=" + codEmisor
+                + ", codUsuario=" + codUsuario + ", numTerminal=" + numTerminal
+                + ", numTarjeta=" + numTarjeta + ", numReferencia="
+                + numReferencia + ", fechaExpiracion=" + fechaExpiracion
+                + ", comercio=" + comercio + ", fechaTxnTerminal="
+                + fechaTxnTerminal + ", horaTxnTerminal=" + horaTxnTerminal
+                + ", reservado=" + reservado + ", idTransaccion="
+                + idTransaccion + ", codRespuesta=" + codRespuesta
+                + ", descRespuesta=" + descRespuesta + "]";
+    }
 
-	public String getCodEmisor() {
+    public String getCodEmisor() {
         return codEmisor;
     }
 
@@ -164,4 +168,3 @@ public class DTOInformacionTarjeta {
         this.descRespuesta = descRespuesta;
     }
 }
-

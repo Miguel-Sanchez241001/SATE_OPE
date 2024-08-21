@@ -2,10 +2,7 @@
 package pe.bn.com.sate.ope.infrastructure.service.external.domain.mc;
 
 import java.net.URL;
-import java.util.Map;
-
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
@@ -61,9 +58,7 @@ public class Service1
      */
     @WebEndpoint(name = "BasicHttpsBinding_IService1")
     public IService1 getBasicHttpsBindingIService1() {
-        IService1 port = super.getPort(new QName("http://tempuri.org/", "BasicHttpsBinding_IService1"), IService1.class);
-        configurePort(port);
-        return port;
+        return super.getPort(new QName("http://tempuri.org/", "BasicHttpsBinding_IService1"), IService1.class);
     }
 
     /**
@@ -75,9 +70,7 @@ public class Service1
      */
     @WebEndpoint(name = "BasicHttpsBinding_IService1")
     public IService1 getBasicHttpsBindingIService1(WebServiceFeature... features) {
-        IService1 port = super.getPort(new QName("http://tempuri.org/", "BasicHttpsBinding_IService1"), IService1.class, features);
-        configurePort(port);
-        return port;
+        return super.getPort(new QName("http://tempuri.org/", "BasicHttpsBinding_IService1"), IService1.class, features);
     }
 
     private static URL __getWsdlLocation() {
@@ -86,20 +79,5 @@ public class Service1
         }
         return SERVICE1_WSDL_LOCATION;
     }
-    /**
-     * Configura el puerto para deshabilitar la política de seguridad y establecer el timeout.
-     * 
-     * @param port El puerto del servicio web a configurar.
-     */
-    private void configurePort(IService1 port) {
-        BindingProvider bindingProvider = (BindingProvider) port;
-        Map<String, Object> requestContext = bindingProvider.getRequestContext();
 
-        // Deshabilitar la política de seguridad (esto depende de cómo se ha implementado la seguridad en tu entorno)
-        requestContext.put("com.sun.xml.internal.ws.client.BindingProviderProperties.DISABLE_SECURE_PROCESSING", Boolean.TRUE);
-
-        // Establecer timeout
-        requestContext.put("javax.xml.ws.client.connectionTimeout", "2000"); // 60 segundos
-        requestContext.put("javax.xml.ws.client.receiveTimeout", "3000"); // 120 segundos
-    }
 }

@@ -121,8 +121,9 @@
 	<service-ref>
 		<service-ref-name>service/Service1</service-ref-name>
 		<service-interface>pe.bn.com.sate.ope.infrastructure.service.external.domain.mc.Service1</service-interface>
-		<wsdl-file>WEB-INF/wsdl/Service1.svc.wsdl</wsdl-file>
-		<service-qname xmlns:pfx="http://tempuri.org/">pfx:Service1</service-qname>
+<!-- 		<wsdl-file>WEB-INF/wsdl/Service1.svc.wsdl</wsdl-file>-->		
+			<wsdl-file>WEB-INF/wsdl/Service2.svc.wsdl</wsdl-file>
+ 			<service-qname xmlns:pfx="http://tempuri.org/">pfx:Service1</service-qname>
 		<port-component-ref>
 			<service-endpoint-interface>pe.bn.com.sate.ope.infrastructure.service.external.domain.mc.IService1</service-endpoint-interface>
 			<enable-mtom>false</enable-mtom>

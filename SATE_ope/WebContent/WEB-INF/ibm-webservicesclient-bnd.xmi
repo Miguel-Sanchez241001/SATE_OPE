@@ -4,7 +4,7 @@
     <portQnameBindings xmi:id="PortQnameBinding_1540147413076" portQnameNamespaceLink="http://interfaz.mq2.bn" portQnameLocalNameLink="ServiceReniec2" overriddenEndpointURI="http://10.7.106.115:80/WSConsultaReniec/services/ServiceReniec2"/>
   </serviceRefs>
   <serviceRefs xmi:id="ServiceRef_1540168109702" serviceRefLink="service/GatewayInterfaceService">
-    <portQnameBindings xmi:id="PortQnameBinding_1540168109702" portQnameNamespaceLink="http://interfaz.service.bn.pe" portQnameLocalNameLink="GatewayInterface" overriddenEndpointURI="http://10.7.12.64:9080/WSGatewayService/services/GatewayInterface"/>
+    <portQnameBindings xmi:id="PortQnameBinding_1540168109702" portQnameNamespaceLink="http://interfaz.service.bn.pe" portQnameLocalNameLink="GatewayInterface" overriddenEndpointURI="http://592448l2561:8088/mockGatewayInterfaceSoapBinding"/>
   </serviceRefs>
   <serviceRefs xmi:id="ServiceRef_1540169874579" serviceRefLink="service/ParametroInterfazKeyService">
     <portQnameBindings xmi:id="PortQnameBinding_1540169874579" portQnameNamespaceLink="http://service.ws.comp.bn.com.pe" portQnameLocalNameLink="ParametroInterfazKey" overriddenEndpointURI="http://10.7.12.73:9080/WSParamService12/services/ParametroInterfazKey"/>
@@ -15,8 +15,7 @@
   <serviceRefs xmi:id="ServiceRef_1541201607896" serviceRefLink="service/ServiceMessageService">
     <portQnameBindings xmi:id="PortQnameBinding_1541201607896" portQnameNamespaceLink="http://service.open.ws.simm.bn.www" portQnameLocalNameLink="ServiceMessage" overriddenEndpointURI="http://10.7.12.73:9080/WsSimm/services/ServiceMessage"/>
   </serviceRefs>
-  <serviceRefs xmi:id="ServiceRef_1541608828527" serviceRefLink="service/Service1">
-    <portQnameBindings xmi:id="PortQnameBinding_1541608828527" portQnameNamespaceLink="http://tempuri.org/" portQnameLocalNameLink="BasicHttpBinding_IService1" overriddenEndpointURI="https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc"/>
-    <portQnameBindings xmi:id="PortQnameBinding_1724184834774" portQnameNamespaceLink="http://tempuri.org/" portQnameLocalNameLink="BasicHttpsBinding_IService1" overriddenEndpointURI="https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc"/>
+  <serviceRefs xmi:id="ServiceRef_1724249698600" serviceRefLink="service/Service1">
+    <portQnameBindings xmi:id="PortQnameBinding_1724249698600" portQnameNamespaceLink="http://tempuri.org/" portQnameLocalNameLink="BasicHttpsBinding_IService1" overriddenEndpointURI="https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc"/>
   </serviceRefs>
 </com.ibm.etools.webservice.wscbnd:ClientBinding>
