@@ -89,7 +89,8 @@ public class LoginController implements PhaseListener, Serializable {
             UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, "Captcha no coincide", "");
         }
         logger.info("[loginController] - Fin método iniciarSesion");
-        try {
+       // TEST servicio IZIPAY
+        /*try {
 			fwmcProcesos.informacionDeTarjeta(1);
 		} catch (SocketTimeoutException e) {
 			// TODO Auto-generated catch block
@@ -97,7 +98,7 @@ public class LoginController implements PhaseListener, Serializable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 
     /**
@@ -114,6 +115,13 @@ public class LoginController implements PhaseListener, Serializable {
         return false;
     }
 
+    
+    
+    public void validarConexionTest() {
+    	fwmcProcesos.conexionTest();
+    }
+
+    
     /**
      * Redirecciona al usuario a la página principal.
      */

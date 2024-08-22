@@ -1,0 +1,53 @@
+SATE OPERATIVO
+
+1 Consumir servicios WS de IZIPAY
+2 Asociar Pantallas con el servicio
+3 tener datos en parametros COMP
+
+
+identificacion de los datos constatnes de cada request
+
+
+vitaora
+
+- Buscqueda de movimientos 
+numero tarjeta o dni 
+ventana cuenta fecha inici o fin 
+selecciona y conuslta ws
+si selecciona una cuenta que no es la actual va a la base de datos si es la acutaul consulta ws 
+
+
+
+- Rendicion tarjetas
+Base de datos 
+
+
+- Reporte listado tarjettas 
+    Query base de datos fecha de corte 
+- reporte transancciones por periodo 
+
+
+Izipay 
+
+
+Integracion WServices IZIPAY - proceso
+
+Desarrolo Funcionalidad Busqueda movimientos -  proceso
+ Frontend
+ Logica back
+
+Desarrolo Funcionalidad listado tarjetas  - proceso
+ Frontend
+ Logica back
+
+
+NOTAS WS
+Modificacion tarjetas ==> Bloqueo tarjetas 
+Modificacion Clientes ==> Actualizacion de datos
+
+
+
+
+
+
+

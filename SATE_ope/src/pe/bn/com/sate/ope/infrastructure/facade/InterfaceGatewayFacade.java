@@ -53,6 +53,8 @@ public class InterfaceGatewayFacade {
 			throws ServiceException {
 
 		RequestMensajeHost requestMensajeHost = new RequestMensajeHost();
+		
+		
 		Solicitud solicitud = requestMensajeHost.getSolicitud(ruc, cic,
 				tipoDocumento, numDocumento, password, password,
 				ConstantesGenerales.VERIFICAR_CLAVE);

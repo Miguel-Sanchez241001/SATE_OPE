@@ -1,10 +1,12 @@
 package pe.bn.com.sate.ope.infrastructure.facade;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -25,18 +27,21 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 import com.ibm.wsspi.webservices.Constants; // Importa las constantes relevantes
 
 import org.apache.log4j.Logger;
+import org.apache.openjpa.lib.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import pe.bn.com.sate.ope.application.view.AutorizarSolicitudesController;
 import pe.bn.com.sate.ope.infrastructure.exception.ExternalServiceMCProcesosException;
@@ -52,6 +57,7 @@ import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaMovimientos;
 import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaSaldos;
 import pe.bn.com.sate.ope.transversal.dto.ws.DTOInformacionTarjeta;
 import pe.bn.com.sate.ope.transversal.util.ServicioWebUtil;
+import pe.bn.com.sate.ope.transversal.util.SoapClientUtil;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.componentes.Parametros;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
@@ -70,6 +76,7 @@ public class FWMCProcesos {
 	Parametros parametros;
 	private final Logger logger = Logger.getLogger(FWMCProcesos.class);
 
+	// ANTIGUO
 	public List<MovimientoTarjeta> consultarMovimientosPorTarjeta(
 			String numTarjeta) throws ServiceException {
 		// TODO CAMBIO de if para que envie para pruebas y no verifique
@@ -127,12 +134,12 @@ public class FWMCProcesos {
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
 				/*
-				 JAXBContext jc = JAXBContext
-				 .newInstance(ConsultaMovimientos.class); Unmarshaller
-				 unmarshaller = jc.createUnmarshaller();
-				 
-				 ConsultaMovimientos consultaMovimientos =
-				 (ConsultaMovimientos) unmarshaller .unmarshal(reader);
+				 * JAXBContext jc = JAXBContext
+				 * .newInstance(ConsultaMovimientos.class); Unmarshaller
+				 * unmarshaller = jc.createUnmarshaller();
+				 * 
+				 * ConsultaMovimientos consultaMovimientos =
+				 * (ConsultaMovimientos) unmarshaller .unmarshal(reader);
 				 */
 
 				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(
@@ -346,6 +353,7 @@ public class FWMCProcesos {
 		}
 	}
 
+	// NUEVO
 	public DTOInformacionTarjeta informacionDeTarjeta(int idTarjeta)
 			throws SocketTimeoutException, IOException {
 		logger.info("Iniciando consulta de información de tarjeta.");
@@ -361,13 +369,11 @@ public class FWMCProcesos {
 		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
 		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
 		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
-		inputRequest.put(ConstantesWS.NUM_REFERENCIA,
-				"AC2020000322");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
 		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
 		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
 		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
-		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL,
-				"20160224");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
 		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
 		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
 		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
@@ -380,7 +386,6 @@ public class FWMCProcesos {
 			try {
 				try {
 
-
 					// Configuración del cliente SOAP
 					BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
 
@@ -388,7 +393,8 @@ public class FWMCProcesos {
 							(BindingProvider) basicHttpBinding_IService1Proxy
 									._getDescriptor().getProxy());
 
-					logger.info("Realizando llamada al servicio SOAP...".concat(" Intento: " + attempt ));
+					logger.info("Realizando llamada al servicio SOAP..."
+							.concat(" Intento: " + attempt));
 
 					// Ejecución de la llamada al servicio
 					responseData = basicHttpBinding_IService1Proxy
@@ -403,12 +409,13 @@ public class FWMCProcesos {
 					logger.info("Objeto de respuesta: " + response);
 
 				} catch (SOAPFaultException e) {
-					logger.error(
-							"Error SOAP: Ocurrió un error en el servicio web SOAP "+ e.getMessage());;
+					logger.error("Error SOAP: Ocurrió un error en el servicio web SOAP "
+							+ e.getMessage());
+					;
 				} catch (WebServiceException e) {
-					logger.error(
-							"Error de Servicio Web: Ocurrió un error en la comunicación con el servicio web "+ e.getMessage());
-				}  
+					logger.error("Error de Servicio Web: Ocurrió un error en la comunicación con el servicio web "
+							+ e.getMessage());
+				}
 			} catch (Exception e) {
 				logger.error("Fallo en el intento " + attempt + ": "
 						+ e.getMessage());
@@ -503,57 +510,61 @@ public class FWMCProcesos {
 		}
 	}
 
-	  public <T> T convertirXMLAObjeto(StringReader reader, Class<T> class1) throws JAXBException {
-	        try {
-	            JAXBContext context = JAXBContext.newInstance(class1);
-	            Unmarshaller unmarshaller = context.createUnmarshaller();
-	            return (T) unmarshaller.unmarshal(reader);
-	        } catch (JAXBException e) {
-	            // Lanza una nueva excepción con un mensaje detallado, preservando el stack trace original
-	            throw new JAXBException("Error al convertir el XML a un objeto de tipo " + class1.getName(), e);
-	        } catch (Exception e) {
-	            // Captura cualquier otra excepción inesperada
-	            throw new JAXBException("Ocurrió un error inesperado al intentar convertir el XML a un objeto.", e);
-	        }
-	    }
+	public <T> T convertirXMLAObjeto(StringReader reader, Class<T> class1)
+			throws JAXBException {
+		try {
+			JAXBContext context = JAXBContext.newInstance(class1);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			return (T) unmarshaller.unmarshal(reader);
+		} catch (JAXBException e) {
+			// Lanza una nueva excepción con un mensaje detallado, preservando
+			// el stack trace original
+			logger.error(e.getMessage());
+			throw new JAXBException(
+					"Error al convertir el XML a un objeto de tipo "
+							+ class1.getName(), e);
+		} catch (Exception e) {
+			// Captura cualquier otra excepción inesperada
+			throw new JAXBException(
+					"Ocurrió un error inesperado al intentar convertir el XML a un objeto.",
+					e);
+		}
+	}
 
-	private void conexionTest() {
- 		System.setProperty("javax.net.ssl.trustStore",
+	public void conexionTest() {
+	/*	System.setProperty("javax.net.ssl.trustStore",
 				"C:\\RAD9\\IBM\\WebSphere\\AppServer\\java\\jre\\lib\\security\\cacerts");
 		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-		System.setProperty("javax.net.debug", "ssl,handshake"); 
+		System.setProperty("javax.net.debug", "ssl,handshake");*/
 
 		String wsdlUrl = "https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc";
-		  String soapTemplate = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-                  + "<Body>"
-                  + "<Informacion_Tarjeta xmlns=\"http://tempuri.org/\">"
-                  + "<XML>WER</XML>"
-                  + "</Informacion_Tarjeta>"
-                  + "</Body>"
-                  + "</Envelope>";
+		String soapTemplate = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+				+ "<Body>"
+				+ "<Informacion_Tarjeta xmlns=\"http://tempuri.org/\">"
+				+ "<XML>WER</XML>"
+				+ "</Informacion_Tarjeta>"
+				+ "</Body>"
+				+ "</Envelope>";
 
 		Map<String, String> inputRequest = ConstantesWS
 				.getInformacionTarjetaMap();
 		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
 		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
 		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
-		inputRequest.put(ConstantesWS.NUM_REFERENCIA,
-				"AC2020000322");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
 		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
 		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
 		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
-		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL,
-				"20160224");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
 		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
 		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
 		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
 		inputRequest.put(ConstantesWS.RESERVADO, "");
 		String soapRequestPrevie = ConstantesWS.generarXml(
 				ConstantesWS.INFORMACION_TARJETA_XML, inputRequest);
-        String soapRequest = soapTemplate.replace("WER", soapRequestPrevie);
+		String soapRequest = soapTemplate.replace("WER", soapRequestPrevie);
 
 		logger.info("Request generado: " + soapRequest);
-		
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -567,7 +578,7 @@ public class FWMCProcesos {
 				try {
 					// Ignorar SSL si es necesario (no recomendado para
 					// producción)
-					 ignoreSSL();
+					ignoreSSL();
 
 					URL url = new URL(wsdlUrl);
 					HttpURLConnection connection = (HttpURLConnection) url
@@ -588,7 +599,7 @@ public class FWMCProcesos {
 					connection.setReadTimeout(15000); // 15 segundos
 
 					logger.info("Enviando solicitud SOAP:");
- 
+
 					// Enviar la solicitud SOAP
 					OutputStream os = connection.getOutputStream();
 					os.write(soapRequest.getBytes("UTF-8"));
@@ -602,8 +613,9 @@ public class FWMCProcesos {
 
 					if (statusCode == 200) {
 						logger.info("Conexión exitosa al servicio SOAP.");
-			            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-;
+						BufferedReader br = new BufferedReader(
+								new InputStreamReader(
+										connection.getInputStream(), "UTF-8"));
 						String responseLine;
 						StringBuilder response = new StringBuilder();
 						while ((responseLine = br.readLine()) != null) {
@@ -613,18 +625,32 @@ public class FWMCProcesos {
 
 						logger.info("Respuesta del servidor:");
 						logger.info(response.toString());
+
+						Document  documentoXML = SoapClientUtil.parseXmlResponse(response
+								.toString());
+						String resultado = SoapClientUtil.getTextFromElement(documentoXML, "Informacion_TarjetaResult");
+						Document  documentoXMLDTO = SoapClientUtil.parseXmlResponse(new String(resultado.getBytes("UTF-8")));
+						logger.info("Respuesta del servidor DATA:");
+						logger.info(documentoXMLDTO.toString());
+						String contenidoXML = resultado.substring(
+						        resultado.indexOf("<Informacion_Tarjeta>"),
+						        resultado.indexOf("</Informacion_Tarjeta>") + "</Informacion_Tarjeta>".length());
+
+						StringReader reader = new StringReader(contenidoXML);
 						
+						   try (BufferedReader bufferedReader = new BufferedReader(reader)) {
+					            String line;
+					            while ((line = bufferedReader.readLine()) != null) {
+					                System.out.println(line);
+					            }
+					        } catch (IOException e) {
+					            e.printStackTrace();
+					        }
+						responseDTO = convertirXMLAObjeto(new StringReader(contenidoXML),
+								DTOInformacionTarjeta.class);
+						logger.info("Objeto de respuesta: " + responseDTO);
 						
-					String	responseData =  parseXmlResponse(response.toString());
-							StringReader reader = new StringReader(responseData);
-							logger.info("Respuesta del servidor DATA:");
-							logger.info(responseData);
-							responseDTO = convertirXMLAObjeto(reader,
-									DTOInformacionTarjeta.class);
-							logger.info("Objeto de respuesta: " + response);
-							success = true;
-							logger.info("Conexión exitosa en el intento " + attempt);
-						
+
 					} else {
 						logger.info("No se pudo conectar al servicio SOAP. Código de estado: "
 								+ statusCode);
@@ -643,6 +669,8 @@ public class FWMCProcesos {
 					}
 
 					connection.disconnect();
+					success = true;
+					logger.info("Conexión exitosa en el intento " + attempt);
 				} catch (Exception e) {
 					logger.info("Error testeando servicio Izipay: "
 							+ e.getMessage());
@@ -659,84 +687,59 @@ public class FWMCProcesos {
 		}
 	}
 
+
+
+
+
 	
-	 private String parseXmlResponse(String xml) {
-	     String data = null;   
-		 try {
-	            // Crear un DocumentBuilder para parsear el XML
-	            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	            DocumentBuilder builder = factory.newDocumentBuilder();
-	            Document document = builder.parse(new java.io.ByteArrayInputStream(xml.getBytes("UTF-8")));
+	
 
-	            // Normalizar el documento
-	            document.getDocumentElement().normalize();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private void ignoreSSL() throws Exception {
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 
-	            // Imprimir el documento parseado
-	         data =    printElement(document.getDocumentElement(), "");
+			@Override
+			public X509Certificate[] getAcceptedIssuers() { // TODO
+				return null;
+			}
 
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-		return data;
+			@Override
+			public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+					throws CertificateException { // TODO Auto-generated method
+													// stub
+
+			}
+
+			@Override
+			public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+					throws CertificateException { // TODO Auto-generated method
+													// stub
+
+			}
+		} };
+
+		SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+		// Deshabilitar verificación de nombre de host
+		HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+
+			@Override
+			public boolean verify(String arg0, SSLSession arg1) { // TODO
+				return true;
+			}
+
+		});
 	}
-
-	private String printElement(Element element, String indent) {
-		// Imprimir el nombre del elemento y sus atributos
-        System.out.println(indent + "Element: " + element.getTagName());
-        String data = "";
-        // Imprimir atributos, si los tiene
-        if (element.hasAttributes()) {
-            element.getAttributes().getLength();
-            element.getAttributes();
-            for (int i = 0; i < element.getAttributes().getLength(); i++) {
-                Node attr = element.getAttributes().item(i);
-                System.out.println(indent + "  Attribute: " + attr.getNodeName() + " = " + attr.getNodeValue());
-            }
-        }
-
-        // Recorrer los nodos hijos
-        NodeList children = element.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node node = children.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                // Llamada recursiva para imprimir nodos hijos
-                printElement((Element) node, indent + "  ");
-            } else if (node.getNodeType() == Node.TEXT_NODE && !node.getTextContent().trim().isEmpty()) {
-                // Imprimir contenido de texto
-                System.out.println(indent + "  Text Content: " + node.getTextContent().trim());
-                data =  node.getTextContent().trim();
-            }
-        }
-		return data;		
-	}
-
-	private void ignoreSSL() throws Exception { TrustManager[] trustAllCerts
-	 = new TrustManager[] { new X509TrustManager() {
-	 
-	 @Override public X509Certificate[] getAcceptedIssuers() { // TODO
-	   return null; }
-	 
-	 @Override public void checkServerTrusted(X509Certificate[] arg0, String
-	 arg1) throws CertificateException { // TODO Auto-generated method stub
-	 
-	 }
-	 
-	 @Override public void checkClientTrusted(X509Certificate[] arg0, String
-	 arg1) throws CertificateException { // TODO Auto-generated method stub
-	 
-	 } } };
-	 
-	 SSLContext sc = SSLContext.getInstance("SSL"); sc.init(null,
-	 trustAllCerts, new java.security.SecureRandom());
-	 HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-	 
-	 // Deshabilitar verificación de nombre de host
-	 HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-	 
-	 @Override public boolean verify(String arg0, SSLSession arg1) { // TODO
-	 return true; }
-	 
-	 }); }
-	 
 
 }
