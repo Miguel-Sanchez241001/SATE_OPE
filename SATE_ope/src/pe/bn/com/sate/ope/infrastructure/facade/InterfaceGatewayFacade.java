@@ -172,7 +172,7 @@ public class InterfaceGatewayFacade {
 				}
 			} else {
 				throw new InternalServiceException(
-						"Número de documento no pertenece a ningun usuario");
+						"Número de documento no pertenece a ningún usuario");
 			}
 		} else {
 			throw new InternalServiceException(

@@ -22,6 +22,9 @@ public class Parametros {
 	public String prefijoNumReferenciaMc;
 	public String wsUsuarioMc;
 	public String wsClaveMc;
+	public String wsSoapMc;
+
+
 
 	// PARAMETROS TIEMPO
 	private String sesionExpiradaTiempo;
@@ -155,5 +158,11 @@ public class Parametros {
 	public void setWsClaveMc(String wsClaveMc) {
 		this.wsClaveMc = wsClaveMc;
 	}
+	public String getWsSoapMc() {
+		return wsSoapMc;
+	}
 
+	public void setWsSoapMc(String wsSoapMc) {
+		this.wsSoapMc = wsSoapMc;
+	}
 }

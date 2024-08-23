@@ -106,6 +106,8 @@ public class ConstantesGenerales {
 	public final static String PARAM_PREFIJONUMREFERENCIA = "PREFIJONUMREFERENCIAMC";
 	public final static String PARAM_WSUSUARIOMC = "WSUSUARIOMC";
 	public final static String PARAM_WSCLAVEMC = "WSCLAVEMC";
+	public static final String PARAM_WSURLSOAPMC = "WSURLSOAPMC";
+
 
 	// GRUPO TIEMPO
 	public final static String GRUPO_TIEMPO = "TIEMPO";
@@ -116,6 +118,7 @@ public class ConstantesGenerales {
 	// TODO RUTA CLAVE SEGURA SATE OPE
 	public static final String RUTA_CLAVE_SEGURA = "C://opt//software//key//sate//clavesegurades.key";
 	 //public static final String RUTA_CLAVE_SEGURA = "//opt//software//key//sate//clavesegurades.key";
+
 
 	// HOST TIPO OPERACION
 	public static String GENERAR_CLAVE = "01";

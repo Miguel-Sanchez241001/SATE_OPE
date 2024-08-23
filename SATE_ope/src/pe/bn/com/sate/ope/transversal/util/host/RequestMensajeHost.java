@@ -31,14 +31,14 @@ public class RequestMensajeHost {
 
         logger.info("[RequestMensajeHost] - Inicio del m√©todo getSolicitud");
         // TODO COMENTAR DATOS DE AUTENTICACION 
-        logger.debug("[RequestMensajeHost] - Par√°metros de entrada: ");
-        logger.debug("RUC: " + ruc);
-        logger.debug("CIC: " + cic);
-        logger.debug("Tipo de Documento: " + tipoDocumento);
-        logger.debug("Numero de Documento: " + numDocumento);
-        logger.debug("ContraseÒa 1: " + password1);
-        logger.debug("ContraseÒa 2: " + (password2 != null ? password2 : "No proporcionada"));
-        logger.debug("Tipo de Operaci√≥n: " + tipoOperacion);
+        logger.info("[RequestMensajeHost] - Par√°metros de entrada: ");
+        logger.info("RUC: " + ruc);
+        logger.info("CIC: " + cic);
+        logger.info("Tipo de Documento: " + tipoDocumento);
+        logger.info("Numero de Documento: " + numDocumento);
+        logger.info("ContraseÒa 1: " + password1);
+        logger.info("ContraseÒa 2: " + (password2 != null ? password2 : "No proporcionada"));
+        logger.info("Tipo de Operaci√≥n: " + tipoOperacion);
 
         CicsSoapConnection cics = new CicsSoapConnection();
         Solicitud solicitud = null;
@@ -51,12 +51,12 @@ public class RequestMensajeHost {
                     password1, password2 == null ? password1 : password2,
                     "PJMO");
 
-            logger.debug("[RequestMensajeHost] - Solicitud enviada: " + solicitudInput);
+            logger.info("[RequestMensajeHost] - Solicitud enviada: " + solicitudInput);
 
             BodySolicitud bodyIn = new BodySolicitud();
             BodySolicitud solicitudOutPut = cics.enviarTrama(solicitudInput, bodyIn);
 
-            logger.debug("[RequestMensajeHost] - Respuesta del host: " + solicitudOutPut);
+            logger.info("[RequestMensajeHost] - Respuesta del host: " + solicitudOutPut);
 
             if ("9995".equals(solicitudOutPut.getByTag("msgnoHost").trim())) {
                 solicitud = new Solicitud();

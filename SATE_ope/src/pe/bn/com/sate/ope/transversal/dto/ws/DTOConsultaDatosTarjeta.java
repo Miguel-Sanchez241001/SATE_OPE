@@ -2,8 +2,8 @@ package pe.bn.com.sate.ope.transversal.dto.ws;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "Informacion_Tarjeta")
-public class DTOInformacionTarjeta {
+@XmlRootElement(name = "Consulta_Datos_Tarjeta")
+public class DTOConsultaDatosTarjeta {
 
     private String codEmisor;
     private String codUsuario;

@@ -30,6 +30,7 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 
 import pe.bn.com.sate.ope.application.model.LoginModel;
+import pe.bn.com.sate.ope.infrastructure.exception.ExternalServiceMCProcesosException;
 import pe.bn.com.sate.ope.infrastructure.exception.InternalServiceException;
 import pe.bn.com.sate.ope.infrastructure.exception.ServiceException;
 import pe.bn.com.sate.ope.infrastructure.facade.FWMCProcesos;
@@ -38,6 +39,7 @@ import pe.bn.com.sate.ope.infrastructure.service.external.domain.novatronic.capt
 import pe.bn.com.sate.ope.infrastructure.service.internal.CaptchaService;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
+import pe.bn.com.sate.ope.transversal.util.excepciones.InternalExcepcion;
 import pe.bn.com.sate.ope.transversal.util.excepciones.LoginException;
 
 /**
@@ -89,16 +91,7 @@ public class LoginController implements PhaseListener, Serializable {
             UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, "Captcha no coincide", "");
         }
         logger.info("[loginController] - Fin método iniciarSesion");
-       // TEST servicio IZIPAY
-        /*try {
-			fwmcProcesos.informacionDeTarjeta(1);
-		} catch (SocketTimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+ 
     }
 
     /**
@@ -118,7 +111,11 @@ public class LoginController implements PhaseListener, Serializable {
     
     
     public void validarConexionTest() {
-    	fwmcProcesos.conexionTest();
+    	try {
+			fwmcProcesos.conexionTest();
+		} catch (ExternalServiceMCProcesosException | InternalExcepcion e) {
+			e.printStackTrace();
+		}
     }
 
     

@@ -79,9 +79,7 @@
 										onkeypress="javascript:return jsValidarKey(event,/[0-9]/);"
 										requiredMessage="Ingrese un número de RUC"
 										validatorMessage="El RUC debe tener 11 dígitos">
-									<p:ajax event="blur" listener="#{loginController.validarConexionTest}"/>
 										<f:validateLength minimum="11" maximum="11" />
-										
 									</p:inputText>
 								</center></td>
 						</tr>
@@ -201,7 +199,7 @@
 										id="password" maxlength="6" required="true" redisplay="true"
 										onkeydown="javascript:return false;"
 										requiredMessage="Ingrese una clave"
-										validatorMessage="La clave debe tener 6 digitos">
+										validatorMessage="La clave debe tener 6 dígitos">
 										<f:validateLength minimum="6" />
 									</p:password>
 									<br></br>

@@ -102,12 +102,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                             throw new LoginException(mensaje);
                         }
                     } else {
-                        String mensaje = "Usuario inactivo";
+                        String mensaje = "Usted ya no es representante de la Unidad Ejecutora";
                         logger.error(usuario.getNumeroDocumento()+ " " +mensaje);
                         throw new LoginException(mensaje);
                     }
                 } else {
-                    String mensaje = "Número de documento no pertenece a ningun usuario";
+                    String mensaje = "Número de documento no pertenece a ningún usuario";
                     logger.error(mensaje);
                     throw new LoginException(mensaje);
                 }
@@ -204,6 +204,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			parametros.setWsUsuarioMc(valor);
 		} else if (param.equals(ConstantesGenerales.PARAM_WSCLAVEMC)) {
 			parametros.setWsClaveMc(valor);
+		} else if (param.equals(ConstantesGenerales.PARAM_WSURLSOAPMC)) {
+			parametros.setWsSoapMc(valor);
 		}
 	}
 

@@ -55,13 +55,19 @@ import pe.bn.com.sate.ope.transversal.dto.sate.MovimientoTarjeta;
 import pe.bn.com.sate.ope.transversal.dto.sate.SaldoTarjeta;
 import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaMovimientos;
 import pe.bn.com.sate.ope.transversal.dto.ws.ConsultaSaldos;
-import pe.bn.com.sate.ope.transversal.dto.ws.DTOInformacionTarjeta;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOModificacionClientes;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOModificacionTarjeta;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOConsultaDatosExpediente;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOConsultaMovimientosExpediente;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOConsultaDatosTarjeta;
+import pe.bn.com.sate.ope.transversal.dto.ws.DTOwservice;
 import pe.bn.com.sate.ope.transversal.util.ServicioWebUtil;
 import pe.bn.com.sate.ope.transversal.util.SoapClientUtil;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.componentes.Parametros;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesWS;
+import pe.bn.com.sate.ope.transversal.util.excepciones.InternalExcepcion;
 
 @Component
 public class FWMCProcesos {
@@ -142,8 +148,8 @@ public class FWMCProcesos {
 				 * (ConsultaMovimientos) unmarshaller .unmarshal(reader);
 				 */
 
-				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(
-						reader, ConsultaMovimientos.class);
+				ConsultaMovimientos consultaMovimientos = SoapClientUtil
+						.convertirXMLAObjeto(reader, ConsultaMovimientos.class);
 				logger.info(consultaMovimientos.toString());
 
 				if (consultaMovimientos.getCodRespuesta().equals("0000")) {
@@ -154,10 +160,6 @@ public class FWMCProcesos {
 					throw new ExternalServiceMCProcesosException(
 							consultaMovimientos.getDescRespuesta());
 				}
-			} catch (JAXBException je) {
-				throw new ExternalServiceMCProcesosException(
-						ConstantesGenerales.ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_MC,
-						je);
 			} catch (Exception ex) {
 				throw new ExternalServiceMCProcesosException(
 						ConstantesGenerales.ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_MC,
@@ -272,8 +274,8 @@ public class FWMCProcesos {
 			StringReader reader = new StringReader(response.substring(
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
-			ModificacionTarjeta modificacionTarjeta = convertirXMLAObjeto(
-					reader, ModificacionTarjeta.class);
+			ModificacionTarjeta modificacionTarjeta = SoapClientUtil
+					.convertirXMLAObjeto(reader, ModificacionTarjeta.class);
 
 			return modificacionTarjeta;
 		} catch (Exception ex) {
@@ -328,8 +330,8 @@ public class FWMCProcesos {
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
-				ConsultaSaldos consultaSaldos = convertirXMLAObjeto(reader,
-						ConsultaSaldos.class);
+				ConsultaSaldos consultaSaldos = SoapClientUtil
+						.convertirXMLAObjeto(reader, ConsultaSaldos.class);
 
 				logger.info(consultaSaldos.toString());
 
@@ -340,9 +342,6 @@ public class FWMCProcesos {
 							consultaSaldos.getDescRespuesta());
 				}
 
-			} catch (JAXBException je) {
-				throw new ExternalServiceMCProcesosException(
-						"Error en el negocio, consulte con el administrador");
 			} catch (Exception ex) {
 				throw new ExternalServiceMCProcesosException(ex.getMessage(),
 						ex);
@@ -353,201 +352,14 @@ public class FWMCProcesos {
 		}
 	}
 
-	// NUEVO
-	public DTOInformacionTarjeta informacionDeTarjeta(int idTarjeta)
-			throws SocketTimeoutException, IOException {
-		logger.info("Iniciando consulta de información de tarjeta.");
-		DTOInformacionTarjeta response = null;
-		String responseData = null;
-		conexionTest();
-		int maxRetries = 10;
-		int attempt = 0;
-		boolean success = false;
-		// Preparación de la solicitud
-		Map<String, String> inputRequest = ConstantesWS
-				.getInformacionTarjetaMap();
-		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
-		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
-		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
-		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
-		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
-		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
-		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
-		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
-		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
-		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
-		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
-		inputRequest.put(ConstantesWS.RESERVADO, "");
-		String request = ConstantesWS.generarXml(
-				ConstantesWS.INFORMACION_TARJETA_XML, inputRequest);
-		logger.info("Request generado: " + request);
-		while (attempt < maxRetries && !success) {
-			attempt++;
-			try {
-				try {
+	// WS IZIPAY METODOS 2024
+	public DTOConsultaDatosTarjeta informacionDeTarjeta() throws InternalExcepcion,ExternalServiceMCProcesosException {
 
-					// Configuración del cliente SOAP
-					BasicHttpsBinding_IService1Proxy basicHttpBinding_IService1Proxy = new BasicHttpsBinding_IService1Proxy();
-
-					ServicioWebUtil.cambiarTiempoEspera("10000", "3000",
-							(BindingProvider) basicHttpBinding_IService1Proxy
-									._getDescriptor().getProxy());
-
-					logger.info("Realizando llamada al servicio SOAP..."
-							.concat(" Intento: " + attempt));
-
-					// Ejecución de la llamada al servicio
-					responseData = basicHttpBinding_IService1Proxy
-							.informacionTarjeta(request);
-					logger.info("Response recibido: " + responseData);
-					success = true;
-					logger.info("Conexión exitosa en el intento " + attempt);
-					// Procesamiento de la respuesta
-					StringReader reader = new StringReader(responseData);
-					response = convertirXMLAObjeto(reader,
-							DTOInformacionTarjeta.class);
-					logger.info("Objeto de respuesta: " + response);
-
-				} catch (SOAPFaultException e) {
-					logger.error("Error SOAP: Ocurrió un error en el servicio web SOAP "
-							+ e.getMessage());
-					;
-				} catch (WebServiceException e) {
-					logger.error("Error de Servicio Web: Ocurrió un error en la comunicación con el servicio web "
-							+ e.getMessage());
-				}
-			} catch (Exception e) {
-				logger.error("Fallo en el intento " + attempt + ": "
-						+ e.getMessage());
-				if (attempt == maxRetries) {
-					logger.error("Maximos intentos alcanzados. Abortando.");
-				}
-			}
-		}
-		return response;
-	}
-
-	public void bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) {
-		logger.info("Iniciando bloqueo de tarjeta.");
-
-		try {
-			// Implementación de la lógica para bloquear la tarjeta
-			logger.info("Bloqueando tarjeta.");
-
-			// Simulación de la lógica de negocio
-			// Aquí iría el código que realiza el bloqueo de la tarjeta
-
-			logger.info("Bloqueo de tarjeta finalizado exitosamente.");
-
-		} catch (Exception ex) {
-			logger.error("Error al bloquear la tarjeta", ex);
-			// Manejo de excepciones específico si es necesario
-		} finally {
-			logger.info("Finalizando bloqueo de tarjeta");
-		}
-	}
-
-	public void consultaDeMovimientoPorExpediente(int expedienteId) {
-		logger.info("Iniciando consulta de movimientos por expediente.");
-
-		try {
-			// Implementación de la lógica para consultar movimientos por
-			// expediente
-			logger.info("Consultando movimientos para el expediente.");
-
-			// Simulación de la lógica de negocio
-			// Aquí iría el código que consulta y procesa los movimientos del
-			// expediente
-
-			logger.info("Consulta de movimientos por expediente finalizada exitosamente.");
-
-		} catch (Exception ex) {
-			logger.error("Error al consultar movimientos por expediente", ex);
-			// Manejo de excepciones específico si es necesario
-		} finally {
-			logger.info("Finalizando consulta de movimientos por expediente");
-		}
-	}
-
-	public void consultaDeDatosPorExpediente(int expedienteId) {
-		logger.info("Iniciando consulta de datos por expediente.");
-
-		try {
-			// Implementación de la lógica para consultar datos por expediente
-			logger.info("Consultando datos para el expediente.");
-
-			// Simulación de la lógica de negocio
-			// Aquí iría el código que consulta y procesa los datos del
-			// expediente
-
-			logger.info("Consulta de datos por expediente finalizada exitosamente.");
-
-		} catch (Exception ex) {
-			logger.error("Error al consultar datos por expediente", ex);
-			// Manejo de excepciones específico si es necesario
-		} finally {
-			logger.info("Finalizando consulta de datos por expediente");
-		}
-	}
-
-	public void actualizacionDeDatos(int idTarjeta, String nuevosDatos) {
-		logger.info("Iniciando actualización de datos para la tarjeta.");
-
-		try {
-			// Implementación de la lógica para actualizar datos de la tarjeta
-			logger.info("Actualizando datos para la tarjeta.");
-
-			// Simulación de la lógica de negocio
-			// Aquí iría el código que actualiza los datos de la tarjeta
-
-			logger.info("Actualización de datos finalizada exitosamente.");
-
-		} catch (Exception ex) {
-			logger.error("Error al actualizar datos de la tarjeta", ex);
-			// Manejo de excepciones específico si es necesario
-		} finally {
-			logger.info("Finalizando actualización de datos para la tarjeta");
-		}
-	}
-
-	public <T> T convertirXMLAObjeto(StringReader reader, Class<T> class1)
-			throws JAXBException {
-		try {
-			JAXBContext context = JAXBContext.newInstance(class1);
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			return (T) unmarshaller.unmarshal(reader);
-		} catch (JAXBException e) {
-			// Lanza una nueva excepción con un mensaje detallado, preservando
-			// el stack trace original
-			logger.error(e.getMessage());
-			throw new JAXBException(
-					"Error al convertir el XML a un objeto de tipo "
-							+ class1.getName(), e);
-		} catch (Exception e) {
-			// Captura cualquier otra excepción inesperada
-			throw new JAXBException(
-					"Ocurrió un error inesperado al intentar convertir el XML a un objeto.",
-					e);
-		}
-	}
-
-	public void conexionTest() {
-	/*	System.setProperty("javax.net.ssl.trustStore",
-				"C:\\RAD9\\IBM\\WebSphere\\AppServer\\java\\jre\\lib\\security\\cacerts");
-		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-		System.setProperty("javax.net.debug", "ssl,handshake");*/
-
-		String wsdlUrl = "https://testwsgestiontarjetas.izipay.pe/WCFGestionTarjetas/Service1.svc";
-		String soapTemplate = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-				+ "<Body>"
-				+ "<Informacion_Tarjeta xmlns=\"http://tempuri.org/\">"
-				+ "<XML>WER</XML>"
-				+ "</Informacion_Tarjeta>"
-				+ "</Body>"
-				+ "</Envelope>";
+		String wsdlUrl = parametros.getWsSoapMc();
+	 
 
 		Map<String, String> inputRequest = ConstantesWS
-				.getInformacionTarjetaMap();
+				.getConsultaDatosTarjetaMap();
 		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
 		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
 		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
@@ -561,185 +373,457 @@ public class FWMCProcesos {
 		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
 		inputRequest.put(ConstantesWS.RESERVADO, "");
 		String soapRequestPrevie = ConstantesWS.generarXml(
-				ConstantesWS.INFORMACION_TARJETA_XML, inputRequest);
-		String soapRequest = soapTemplate.replace("WER", soapRequestPrevie);
+				ConstantesWS.Consulta_Datos_Tarjeta_XML, inputRequest);
+		DTOwservice dto = new DTOwservice("Informacion_Tarjeta");
+
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
 		logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
 		boolean success = false;
-		DTOInformacionTarjeta responseDTO = null;
+		DTOConsultaDatosTarjeta responseDTO = null;
 
 		while (attempt < maxRetries && !success) {
 			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
+			}
+
 			try {
 
-				try {
-					// Ignorar SSL si es necesario (no recomendado para
-					// producción)
-					ignoreSSL();
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
 
-					URL url = new URL(wsdlUrl);
-					HttpURLConnection connection = (HttpURLConnection) url
-							.openConnection();
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
 
-					connection.setRequestMethod("POST");
-					connection.setRequestProperty("Content-Type",
-							"text/xml;charset=UTF-8");
-					connection.setRequestProperty("SOAPAction",
-							"http://tempuri.org/IService1/Informacion_Tarjeta");
-					connection.setRequestProperty("Accept-Encoding",
-							"gzip,deflate");
-					connection.setRequestProperty("User-Agent",
-							"Apache-HttpClient/4.5.5 (Java/16.0.2)");
-					connection.setRequestProperty("Connection", "Keep-Alive");
-					connection.setDoOutput(true);
-					connection.setConnectTimeout(15000); // 15 segundos
-					connection.setReadTimeout(15000); // 15 segundos
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
 
-					logger.info("Enviando solicitud SOAP:");
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						DTOConsultaDatosTarjeta.class);
 
-					// Enviar la solicitud SOAP
-					OutputStream os = connection.getOutputStream();
-					os.write(soapRequest.getBytes("UTF-8"));
-					os.flush();
-					os.close();
-
-					// Capturar y registrar la respuesta
-					int statusCode = connection.getResponseCode();
-					logger.info("Código de estado de la respuesta: "
-							+ statusCode);
-
-					if (statusCode == 200) {
-						logger.info("Conexión exitosa al servicio SOAP.");
-						BufferedReader br = new BufferedReader(
-								new InputStreamReader(
-										connection.getInputStream(), "UTF-8"));
-						String responseLine;
-						StringBuilder response = new StringBuilder();
-						while ((responseLine = br.readLine()) != null) {
-							response.append(responseLine);
-						}
-						br.close();
-
-						logger.info("Respuesta del servidor:");
-						logger.info(response.toString());
-
-						Document  documentoXML = SoapClientUtil.parseXmlResponse(response
-								.toString());
-						String resultado = SoapClientUtil.getTextFromElement(documentoXML, "Informacion_TarjetaResult");
-						Document  documentoXMLDTO = SoapClientUtil.parseXmlResponse(new String(resultado.getBytes("UTF-8")));
-						logger.info("Respuesta del servidor DATA:");
-						logger.info(documentoXMLDTO.toString());
-						String contenidoXML = resultado.substring(
-						        resultado.indexOf("<Informacion_Tarjeta>"),
-						        resultado.indexOf("</Informacion_Tarjeta>") + "</Informacion_Tarjeta>".length());
-
-						StringReader reader = new StringReader(contenidoXML);
-						
-						   try (BufferedReader bufferedReader = new BufferedReader(reader)) {
-					            String line;
-					            while ((line = bufferedReader.readLine()) != null) {
-					                System.out.println(line);
-					            }
-					        } catch (IOException e) {
-					            e.printStackTrace();
-					        }
-						responseDTO = convertirXMLAObjeto(new StringReader(contenidoXML),
-								DTOInformacionTarjeta.class);
-						logger.info("Objeto de respuesta: " + responseDTO);
-						
-
-					} else {
-						logger.info("No se pudo conectar al servicio SOAP. Código de estado: "
-								+ statusCode);
-						BufferedReader br = new BufferedReader(
-								new InputStreamReader(
-										connection.getErrorStream()));
-						String responseLine;
-						StringBuilder response = new StringBuilder();
-						while ((responseLine = br.readLine()) != null) {
-							response.append(responseLine);
-						}
-						br.close();
-
-						logger.info("Respuesta de error del servidor:");
-						logger.info(response.toString());
-					}
-
-					connection.disconnect();
-					success = true;
-					logger.info("Conexión exitosa en el intento " + attempt);
-				} catch (Exception e) {
-					logger.info("Error testeando servicio Izipay: "
-							+ e.getMessage());
-					// e.printStackTrace();
-				}
-
-			} catch (Exception e) {
-				logger.error("Fallo en el intento " + attempt + ": "
-						+ e.getMessage());
-				if (attempt == maxRetries) {
-					logger.error("Maximos intentos alcanzados. Abortando.");
-				}
+				logger.info("Objeto de respuesta: " + responseDTO);
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
 			}
+
 		}
+		return responseDTO;
+
 	}
 
+	public DTOModificacionTarjeta bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) throws InternalExcepcion {
+		String wsdlUrl = parametros.getWsSoapMc();
+		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_BLOQUEO_TARJETA);
+		Class<DTOModificacionTarjeta> dtoClass = DTOModificacionTarjeta.class;
+		DTOModificacionTarjeta responseDTO = null;
 
 
+		Map<String, String> inputRequest = ConstantesWS
+				.getModificacionTarjetaMap();
+		
+		
+		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
+		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
+		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
+		inputRequest.put(ConstantesWS.ORGANIZACION, "941");
+		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
+		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
+		inputRequest.put(ConstantesWS.CODIGO_BLOQUEO, "A3");
+		inputRequest.put(ConstantesWS.MOTIVO_BLOQUEO, "Robo");
+		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
+		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
+		inputRequest.put(ConstantesWS.RESERVADO, "");
+		
+		String soapRequestPrevie = ConstantesWS.generarXml(
+				ConstantesWS.MODIFICACION_TARJETA_XML, inputRequest);
+		
 
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-	
-	
+		logger.info("Request generado: " + soapRequest);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private void ignoreSSL() throws Exception {
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+		int maxRetries = 5;
+		int attempt = 0;
+		boolean success = false;
 
-			@Override
-			public X509Certificate[] getAcceptedIssuers() { // TODO
-				return null;
+		while (attempt < maxRetries && !success) {
+			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
 			}
 
-			@Override
-			public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-					throws CertificateException { // TODO Auto-generated method
-													// stub
+			try {
 
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
+
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
+
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
+
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						dtoClass);
+
+				logger.info("Objeto de respuesta: " + responseDTO);
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
 			}
 
-			@Override
-			public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-					throws CertificateException { // TODO Auto-generated method
-													// stub
+		}
+		return responseDTO;
+	}
 
+	public DTOConsultaMovimientosExpediente consultaDeMovimientoPorExpediente(int expedienteId) throws InternalExcepcion {
+		String wsdlUrl = parametros.getWsSoapMc();
+		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_CONSULTA_MOVIMIENTOS_EXPEDIENTE);
+		Class<DTOConsultaMovimientosExpediente> dtoClass = DTOConsultaMovimientosExpediente.class;
+		DTOConsultaMovimientosExpediente responseDTO = null;
+
+
+		Map<String, String> consultaMovimientosExpedienteMap = ConstantesWS
+				.getConsultaMovimientosExpedienteMap();
+		
+		
+		consultaMovimientosExpedienteMap.put(ConstantesWS.COD_EMISOR, "941");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.COD_USUARIO, "CS00000001");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.NUM_TERMINAL, "12345678");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.NUM_REFERENCIA, "ORD20160224");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.ORGANIZACION, "941");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.NUM_TARJETA, "526983659");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.FECHA_EXPIRACION, "");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.COMERCIO, "2999994");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.MONEDA, "604");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.WS_USUARIO, "0944006748");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.WS_CLAVE, "dRUch4hupAvuduBE");
+		consultaMovimientosExpedienteMap.put(ConstantesWS.RESERVADO, "");
+		
+		String soapRequestPrevie = ConstantesWS.generarXml(
+				ConstantesWS.CONSULTA_MOVIMIENTOS_EXPEDIENTE_XML, consultaMovimientosExpedienteMap);
+		
+
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
+
+		logger.info("Request generado: " + soapRequest);
+
+		int maxRetries = 5;
+		int attempt = 0;
+		boolean success = false;
+
+		while (attempt < maxRetries && !success) {
+			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
 			}
-		} };
 
-		SSLContext sc = SSLContext.getInstance("SSL");
-		sc.init(null, trustAllCerts, new java.security.SecureRandom());
-		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			try {
 
-		// Deshabilitar verificación de nombre de host
-		HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
 
-			@Override
-			public boolean verify(String arg0, SSLSession arg1) { // TODO
-				return true;
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
+
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
+
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						dtoClass);
+
+				logger.info("Objeto de respuesta: " + responseDTO);
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
 			}
 
-		});
+		}
+		return responseDTO;
+	}
+
+	public DTOConsultaDatosExpediente consultaDeDatosPorExpediente(int expedienteId) throws InternalExcepcion {
+		String wsdlUrl = parametros.getWsSoapMc();
+		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_CONSULTA_DATOS_EXPEDIENTE);
+		Class<DTOConsultaDatosExpediente> dtoClass = DTOConsultaDatosExpediente.class;
+		DTOConsultaDatosExpediente responseDTO = null;
+
+
+		Map<String, String> inputRequest = ConstantesWS
+				.getModificacionClienteMap();
+		
+		
+		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
+		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
+		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
+		inputRequest.put(ConstantesWS.ORGANIZACION, "941");
+		inputRequest.put(ConstantesWS.NRO_DOCUMENTO, "74851254");
+		inputRequest.put(ConstantesWS.CORREO_ELECTRONICO, "prueba@hotmail.com");
+		inputRequest.put(ConstantesWS.NRO_CELULAR, "965845214");
+		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
+		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
+		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
+		inputRequest.put(ConstantesWS.RESERVADO, "");
+		
+		String soapRequestPrevie = ConstantesWS.generarXml(
+				ConstantesWS.CONSULTA_DATOS_EXPEDIENTE_XML, inputRequest);
+		
+
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
+
+		logger.info("Request generado: " + soapRequest);
+
+		int maxRetries = 5;
+		int attempt = 0;
+		boolean success = false;
+
+		while (attempt < maxRetries && !success) {
+			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
+			}
+
+			try {
+
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
+
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
+
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
+
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						dtoClass);
+
+				logger.info("Objeto de respuesta: " + responseDTO);
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
+			}
+
+		}
+		return responseDTO;
+	}
+
+	public DTOModificacionClientes actualizacionDeDatos(int idTarjeta, String nuevosDatos) throws InternalExcepcion {
+		String wsdlUrl = parametros.getWsSoapMc();
+		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_MODIFICACION_CLIENTE);
+		Class<DTOModificacionClientes> dtoClass = DTOModificacionClientes.class;
+
+
+		Map<String, String> inputRequest = ConstantesWS
+				.getModificacionClienteMap();
+		
+		
+		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
+		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
+		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
+		inputRequest.put(ConstantesWS.ORGANIZACION, "941");
+		inputRequest.put(ConstantesWS.NRO_DOCUMENTO, "74851254");
+		inputRequest.put(ConstantesWS.CORREO_ELECTRONICO, "prueba@hotmail.com");
+		inputRequest.put(ConstantesWS.NRO_CELULAR, "965845214");
+		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
+		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
+		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
+		inputRequest.put(ConstantesWS.RESERVADO, "");
+		
+		String soapRequestPrevie = ConstantesWS.generarXml(
+				ConstantesWS.MODIFICACION_CLIENTE_XML, inputRequest);
+		
+
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
+
+		logger.info("Request generado: " + soapRequest);
+
+		int maxRetries = 5;
+		int attempt = 0;
+		boolean success = false;
+		DTOModificacionClientes responseDTO = null;
+
+		while (attempt < maxRetries && !success) {
+			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
+			}
+
+			try {
+
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
+
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
+
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
+
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						dtoClass);
+
+				logger.info("Objeto de respuesta: " + responseDTO);
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
+			}
+
+		}
+		return responseDTO;
+	}
+
+	public void conexionTest() throws InternalExcepcion,
+			ExternalServiceMCProcesosException {
+		/*
+		 * System.setProperty("javax.net.ssl.trustStore",
+		 * "C:\\RAD9\\IBM\\WebSphere\\AppServer\\java\\jre\\lib\\security\\cacerts"
+		 * ); System.setProperty("javax.net.ssl.trustStorePassword",
+		 * "changeit"); System.setProperty("javax.net.debug", "ssl,handshake");
+		 */
+
+		String wsdlUrl = parametros.getWsSoapMc();
+	 
+
+		Map<String, String> inputRequest = ConstantesWS
+				.getConsultaDatosTarjetaMap();
+		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
+		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
+		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
+		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
+		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
+		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
+		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
+		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
+		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
+		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
+		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
+		inputRequest.put(ConstantesWS.RESERVADO, "");
+		String soapRequestPrevie = ConstantesWS.generarXml(
+				ConstantesWS.Consulta_Datos_Tarjeta_XML, inputRequest);
+		DTOwservice dto = new DTOwservice("Informacion_Tarjeta");
+
+		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
+
+		logger.info("Request generado: " + soapRequest);
+
+		int maxRetries = 5;
+		int attempt = 0;
+		boolean success = false;
+		DTOConsultaDatosTarjeta responseDTO = null;
+
+		while (attempt < maxRetries && !success) {
+			attempt++;
+			String dataWS = "";
+			try {
+				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
+						dto.getSoapAction(),
+						soapRequest);
+			} catch (ExternalServiceMCProcesosException e) {
+				throw e;
+			}
+
+			try {
+
+				logger.info("Respuesta del servidor:");
+				logger.info(dataWS);
+
+				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
+						.toString());
+				String resultado = SoapClientUtil.getTextFromElement(
+						documentoXML, dto.getResultTag());
+
+				String contenidoXML = resultado.substring(
+						resultado.indexOf(dto.getStartTag()),
+						resultado.indexOf(dto.getEndTag())
+								+ dto.getEndTag().length());
+
+				responseDTO = SoapClientUtil.convertirXMLAObjeto(
+						new StringReader(contenidoXML),
+						DTOConsultaDatosTarjeta.class);
+
+				logger.info("Objeto de respuesta: " + responseDTO);
+
+				success = true;
+				logger.info("Conexión exitosa en el intento " + attempt);
+			} catch (InternalExcepcion e) {
+				throw e;
+			}
+
+		}
 	}
 
 }
