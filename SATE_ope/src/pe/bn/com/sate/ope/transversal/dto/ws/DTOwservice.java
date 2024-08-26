@@ -1,8 +1,10 @@
 package pe.bn.com.sate.ope.transversal.dto.ws;
 
+import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesWS;
+
 public class DTOwservice {
 
-	private final String soapTemplate;
+	private String soapTemplate;
 	private final String soapAction;
 	private final String resultTag;
 	private final String startTag;
@@ -19,6 +21,11 @@ public class DTOwservice {
 						+ "<XML>%s</XML>" + "</%s>" + "</Body>" + "</Envelope>",
 						dynamicWord, replacementMarker, dynamicWord);
 
+		if(dynamicWord.equals(ConstantesWS.SOACTION_BLOQUEO_TARJETA)|| dynamicWord.equals(ConstantesWS.SOACTION_BLOQUEO_TARJETA)|| dynamicWord.equals(ConstantesWS.SOACTION_MODIFICACION_CLIENTE)){
+			this.soapTemplate = this.soapTemplate.replace("XML", "xml");
+		}
+		
+		
 		this.soapAction = String.format("http://tempuri.org/IService1/%s",
 				dynamicWord);
 		this.resultTag = dynamicWord + "Result";

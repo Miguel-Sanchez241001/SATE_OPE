@@ -374,11 +374,11 @@ public class FWMCProcesos {
 		inputRequest.put(ConstantesWS.RESERVADO, "");
 		String soapRequestPrevie = ConstantesWS.generarXml(
 				ConstantesWS.Consulta_Datos_Tarjeta_XML, inputRequest);
-		DTOwservice dto = new DTOwservice("Informacion_Tarjeta");
+		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_Consulta_Datos_Tarjeta);
 
 		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-		logger.info("Request generado: " + soapRequest);
+		//logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -460,7 +460,7 @@ public class FWMCProcesos {
 
 		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-		logger.info("Request generado: " + soapRequest);
+		//logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -539,7 +539,7 @@ public class FWMCProcesos {
 
 		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-		logger.info("Request generado: " + soapRequest);
+		//logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -594,7 +594,7 @@ public class FWMCProcesos {
 
 
 		Map<String, String> inputRequest = ConstantesWS
-				.getModificacionClienteMap();
+				.getConsultaDatosExpedienteMap();
 		
 		
 		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
@@ -619,7 +619,7 @@ public class FWMCProcesos {
 
 		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-		logger.info("Request generado: " + soapRequest);
+		//logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -698,7 +698,7 @@ public class FWMCProcesos {
 
 		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
 
-		logger.info("Request generado: " + soapRequest);
+		//logger.info("Request generado: " + soapRequest);
 
 		int maxRetries = 5;
 		int attempt = 0;
@@ -746,84 +746,164 @@ public class FWMCProcesos {
 		return responseDTO;
 	}
 
-	public void conexionTest() throws InternalExcepcion,
-			ExternalServiceMCProcesosException {
-		/*
-		 * System.setProperty("javax.net.ssl.trustStore",
-		 * "C:\\RAD9\\IBM\\WebSphere\\AppServer\\java\\jre\\lib\\security\\cacerts"
-		 * ); System.setProperty("javax.net.ssl.trustStorePassword",
-		 * "changeit"); System.setProperty("javax.net.debug", "ssl,handshake");
-		 */
+	public void conexionTest() throws InternalExcepcion, ExternalServiceMCProcesosException {
+	    int maxRetries = 5;
+	    boolean success = false;
+	    StringBuilder resultadoFallos = new StringBuilder();
 
-		String wsdlUrl = parametros.getWsSoapMc();
-	 
+	    // Probar cada método secuencialmente 5 veces
+	    for (int i = 0; i < 5; i++) {
+	        int fallidos = 0;
 
-		Map<String, String> inputRequest = ConstantesWS
-				.getConsultaDatosTarjetaMap();
-		inputRequest.put(ConstantesWS.COD_EMISOR, "971");
-		inputRequest.put(ConstantesWS.COD_USUARIO, "TW9999");
-		inputRequest.put(ConstantesWS.NUM_TERMINAL, "11010101");
-		inputRequest.put(ConstantesWS.NUM_REFERENCIA, "AC2020000322");
-		inputRequest.put(ConstantesWS.NUM_TARJETA, "000000009");
-		inputRequest.put(ConstantesWS.FECHA_EXPIRACION, "2701");
-		inputRequest.put(ConstantesWS.COMERCIO, "9999999");
-		inputRequest.put(ConstantesWS.FECHA_TXN_TERMINAL, "20160224");
-		inputRequest.put(ConstantesWS.HORA_TXN_TERMINAL, "172020");
-		inputRequest.put(ConstantesWS.WS_USUARIO, "prueba1234");
-		inputRequest.put(ConstantesWS.WS_CLAVE, "prueba1234567890");
-		inputRequest.put(ConstantesWS.RESERVADO, "");
-		String soapRequestPrevie = ConstantesWS.generarXml(
-				ConstantesWS.Consulta_Datos_Tarjeta_XML, inputRequest);
-		DTOwservice dto = new DTOwservice("Informacion_Tarjeta");
+	        // Probar tryInformacionDeTarjeta
+	        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+	            try {
+	                success = tryInformacionDeTarjeta();
+	                if (success) break;
+	            } catch (ExternalServiceMCProcesosException e) {
+	                fallidos++;
+	                resultadoFallos.append("tryInformacionDeTarjeta falló en el intento ")
+	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
+	                logger.error("Error en intento " + attempt + " de tryInformacionDeTarjeta: " + e.getMessage(), e);
+	            }
+	        }
+	        resultadoFallos.append("tryInformacionDeTarjeta intentado ").append(fallidos).append(" veces.\n");
 
-		String soapRequest = dto.getSoapTemplate().replace("SOAP_CONTENT", soapRequestPrevie);
+	        //if (success) break; // Salir si se ha tenido éxito en el método
 
-		logger.info("Request generado: " + soapRequest);
+	        // Probar tryBloqueoDeTarjeta
+	        fallidos = 0;
+	        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+	            try {
+	                success = tryBloqueoDeTarjeta();
+	                if (success) break;
+	            } catch (ExternalServiceMCProcesosException e) {
+	                fallidos++;
+	                resultadoFallos.append("tryBloqueoDeTarjeta falló en el intento ")
+	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
+	                logger.error("Error en intento " + attempt + " de tryBloqueoDeTarjeta: " + e.getMessage(), e);
+	            }
+	        }
+	        resultadoFallos.append("tryBloqueoDeTarjeta intentado ").append(fallidos).append(" veces.\n");
 
-		int maxRetries = 5;
-		int attempt = 0;
-		boolean success = false;
-		DTOConsultaDatosTarjeta responseDTO = null;
+	        //if (success) break;
 
-		while (attempt < maxRetries && !success) {
-			attempt++;
-			String dataWS = "";
-			try {
-				dataWS = SoapClientUtil.sendSoapRequest(wsdlUrl,
-						dto.getSoapAction(),
-						soapRequest);
-			} catch (ExternalServiceMCProcesosException e) {
-				throw e;
-			}
+	        // Probar tryConsultaDeMovimientoPorExpediente
+	        fallidos = 0;
+	        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+	            try {
+	                success = tryConsultaDeMovimientoPorExpediente();
+	                if (success) break;
+	            } catch (ExternalServiceMCProcesosException e) {
+	                fallidos++;
+	                resultadoFallos.append("tryConsultaDeMovimientoPorExpediente falló en el intento ")
+	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
+	                logger.error("Error en intento " + attempt + " de tryConsultaDeMovimientoPorExpediente: " + e.getMessage(), e);
+	            }
+	        }
+	        resultadoFallos.append("tryConsultaDeMovimientoPorExpediente intentado ").append(fallidos).append(" veces.\n");
 
-			try {
+	        //if (success) break;
 
-				logger.info("Respuesta del servidor:");
-				logger.info(dataWS);
+	        // Probar tryConsultaDeDatosPorExpediente
+	        fallidos = 0;
+	        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+	            try {
+	                success = tryConsultaDeDatosPorExpediente();
+	               if (success) break;
+	            } catch (ExternalServiceMCProcesosException e) {
+	                fallidos++;
+	                resultadoFallos.append("tryConsultaDeDatosPorExpediente falló en el intento ")
+	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
+	                logger.error("Error en intento " + attempt + " de tryConsultaDeDatosPorExpediente: " + e.getMessage(), e);
+	            }
+	        }
+	        resultadoFallos.append("tryConsultaDeDatosPorExpediente intentado ").append(fallidos).append(" veces.\n");
 
-				Document documentoXML = SoapClientUtil.parseXmlResponse(dataWS
-						.toString());
-				String resultado = SoapClientUtil.getTextFromElement(
-						documentoXML, dto.getResultTag());
+	        //if (success) break;
 
-				String contenidoXML = resultado.substring(
-						resultado.indexOf(dto.getStartTag()),
-						resultado.indexOf(dto.getEndTag())
-								+ dto.getEndTag().length());
+	        // Probar tryActualizacionDeDatos
+	        fallidos = 0;
+	        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+	            try {
+	                success = tryActualizacionDeDatos();
+	                if (success) break;
+	            } catch (ExternalServiceMCProcesosException e) {
+	                fallidos++;
+	                resultadoFallos.append("tryActualizacionDeDatos falló en el intento ")
+	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
+	                logger.error("Error en intento " + attempt + " de tryActualizacionDeDatos: " + e.getMessage(), e);
+	            }
+	        }
+	        resultadoFallos.append("tryActualizacionDeDatos intentado ").append(fallidos).append(" veces.\n");
 
-				responseDTO = SoapClientUtil.convertirXMLAObjeto(
-						new StringReader(contenidoXML),
-						DTOConsultaDatosTarjeta.class);
+	        //if (success) break;
+	    }
 
-				logger.info("Objeto de respuesta: " + responseDTO);
-
-				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
-			} catch (InternalExcepcion e) {
-				throw e;
-			}
-
-		}
+	    if (!success) {
+	        logger.error("Todos los métodos fallaron después de múltiples intentos.\n" + resultadoFallos.toString());
+	        throw new ExternalServiceMCProcesosException("Todos los intentos fallaron para obtener el DTO:\n" + resultadoFallos.toString());
+	    } else {
+	        logger.info("Método ejecutado con éxito después de múltiples intentos.");
+	    }
 	}
+
+
+
+	private boolean tryInformacionDeTarjeta() {
+	    try {
+	        DTOConsultaDatosTarjeta responseDTO = informacionDeTarjeta();
+	        logger.info("informacionDeTarjeta ejecutado con éxito: " + responseDTO);
+	        return true;
+	    } catch (Exception e) {
+	        logger.warn("Falló el método informacionDeTarjeta: " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	private boolean tryBloqueoDeTarjeta() {
+	    try {
+	        DTOModificacionTarjeta responseDTO = bloqueoDeTarjeta(1, "Robo");
+	        logger.info("bloqueoDeTarjeta ejecutado con éxito: " + responseDTO);
+	        return true;
+	    } catch (Exception e) {
+	        logger.warn("Falló el método bloqueoDeTarjeta: " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	private boolean tryConsultaDeMovimientoPorExpediente() {
+	    try {
+	        DTOConsultaMovimientosExpediente responseDTO = consultaDeMovimientoPorExpediente(1);
+	        logger.info("consultaDeMovimientoPorExpediente ejecutado con éxito: " + responseDTO);
+	        return true;
+	    } catch (Exception e) {
+	        logger.warn("Falló el método consultaDeMovimientoPorExpediente: " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	private boolean tryConsultaDeDatosPorExpediente() {
+	    try {
+	        DTOConsultaDatosExpediente responseDTO = consultaDeDatosPorExpediente(1);
+	        logger.info("consultaDeDatosPorExpediente ejecutado con éxito: " + responseDTO);
+	        return true;
+	    } catch (Exception e) {
+	        logger.warn("Falló el método consultaDeDatosPorExpediente: " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	private boolean tryActualizacionDeDatos() {
+	    try {
+	        DTOModificacionClientes responseDTO = actualizacionDeDatos(1, "nuevosDatos");
+	        logger.info("actualizacionDeDatos ejecutado con éxito: " + responseDTO);
+	        return true;
+	    } catch (Exception e) {
+	        logger.warn("Falló el método actualizacionDeDatos: " + e.getMessage());
+	        return false;
+	    }
+	}
+
 
 }

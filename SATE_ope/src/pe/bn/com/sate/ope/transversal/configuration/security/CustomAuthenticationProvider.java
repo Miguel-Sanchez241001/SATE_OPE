@@ -118,10 +118,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
         } catch (InternalServiceException ise) {
             logger.error("Error interno de servicio: " + ise.getMessage(), ise);
-            throw new LoginException(ConstantesGenerales.ERROR_PERSISTENCE_INTERNAL);
+           // throw new LoginException(ConstantesGenerales.ERROR_PERSISTENCE_INTERNAL);
+            throw new LoginException(ise.getMessage());
         } catch (ServiceException se) {
             logger.error("Error de servicio: " + se.getMessage(), se);
-            throw new LoginException(ConstantesGenerales.ERROR_PERSISTENCE_GENERAL);
+            throw new LoginException(ConstantesGenerales.ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_IGF);
         } catch (Exception e) {
             logger.error("Error inesperado: " + e.getMessage(), e);
             throw new LoginException(e.getMessage());

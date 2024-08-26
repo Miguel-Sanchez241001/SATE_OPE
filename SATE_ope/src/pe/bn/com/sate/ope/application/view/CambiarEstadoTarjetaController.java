@@ -182,11 +182,16 @@ public class CambiarEstadoTarjetaController implements Serializable {
 				+ cambiarEstadoTarjetaModel.getTarjetaSeleccionada()
 						.getMotivoBloqueo());
 
+		/*cambiarEstadoTarjetaModel.setMotivosBloqueoTarjetas(Arrays
+				.asList(MotivosBloqueoTarjeta
+						.motivosBloqueoPorIdMotivo(cambiarEstadoTarjetaModel
+								.getTarjetaSeleccionada().getMotivoBloqueo())));*/
 		cambiarEstadoTarjetaModel.setMotivosBloqueoTarjetas(Arrays
 				.asList(MotivosBloqueoTarjeta
 						.motivosBloqueoPorIdMotivo(cambiarEstadoTarjetaModel
-								.getTarjetaSeleccionada().getMotivoBloqueo())));
-
+								.getDatosTarjetaCliente()
+								.getTarjeta().getEstado())));
+		
 		cambiarEstadoTarjetaModel.setMotivosBloqueoCuenta(Arrays
 				.asList(MotivosBloqueoCuenta
 						.motivosBloqueoPorIdMotivo(cambiarEstadoTarjetaModel

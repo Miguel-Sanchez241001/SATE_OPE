@@ -15,6 +15,7 @@ import pe.bn.com.sate.ope.persistence.mapper.internal.ClienteMapper;
 import pe.bn.com.sate.ope.persistence.mapper.internal.EmpresaMapper;
 import pe.bn.com.sate.ope.persistence.mapper.internal.TarjetaMapper;
 import pe.bn.com.sate.ope.transversal.configuration.security.SecurityContextFacade;
+import pe.bn.com.sate.ope.transversal.dto.host.Solicitud;
 import pe.bn.com.sate.ope.transversal.dto.sate.Cliente;
 import pe.bn.com.sate.ope.transversal.dto.sate.DatosTarjetaCliente;
 import pe.bn.com.sate.ope.transversal.dto.sate.EstadoTarjeta;
@@ -175,7 +176,47 @@ public class TarjetaServiceImpl implements TarjetaService {
 	}
 
 	@Override
-	public DatosTarjetaCliente buscarDatosTarjetasCliente(String tipoBusqueda,
+	public DatosTarjetaCliente buscarDatosTarjetasCliente(String tipoBusqueda, String numDocumento, String tipoOperacion) {
+	    try {
+	        // Obteniendo los objetos necesarios
+	        String rucUsuario = UsefulWebApplication.obtenerUsuario().getRuc();
+
+	        // Inicializando el objeto de retorno
+	        DatosTarjetaCliente datosTarjetaCliente = new DatosTarjetaCliente();
+
+	        // Variables locales para almacenar los datos
+	        Cliente cliente = null;
+	        Tarjeta tarjeta = null;
+	        List<Tarjeta> tarjetas = null;
+
+	        // Lógica de búsqueda según el tipo de búsqueda
+	        if (tipoBusqueda.equals(TipoBusqueda.NUM_TARJETA.getId())) {
+	            // Búsqueda por número de tarjeta
+	            cliente = clienteMapper.buscarClientePorNumTajeta(numDocumento);
+	            tarjeta = tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numDocumento, rucUsuario);
+	            datosTarjetaCliente.setCliente(cliente);
+	            datosTarjetaCliente.setTarjeta(tarjeta);
+	        } else if (tipoBusqueda.equals(TipoBusqueda.DNI.getId()) || tipoBusqueda.equals(TipoBusqueda.CARNET_EXTRANJERIA.getId())) {
+	            // Búsqueda por DNI o Carnet de Extranjería
+	            cliente = clienteMapper.buscarCliente(tipoBusqueda, numDocumento);
+	            datosTarjetaCliente.setCliente(cliente);
+
+	            // Búsqueda de tarjetas según la operación
+	            if (tipoOperacion.equals("B")) { // Bloqueo
+	                tarjetas = tarjetaMapper.buscarTarjetaPorTipoDocumento(tipoBusqueda, numDocumento, rucUsuario);
+	            } else if (tipoOperacion.equals("C")) { // Cancelación
+	                tarjetas = tarjetaMapper.buscarTarjetaPorTipoDocumentoValidosParaBloqueo(tipoBusqueda, numDocumento, rucUsuario);
+	            }
+	            datosTarjetaCliente.setTarjetas(tarjetas);
+	        }
+
+	        return datosTarjetaCliente;
+	    } catch (Exception ex) {
+	        throw new InternalServiceException(ex.getMessage(), ex);
+	    }
+	}
+
+	/*public DatosTarjetaCliente buscarDatosTarjetasCliente(String tipoBusqueda,
 			String numDocumento, String tipoOperacion) {
 		try {
 			DatosTarjetaCliente datosTarjetaCliente = new DatosTarjetaCliente();
@@ -210,7 +251,7 @@ public class TarjetaServiceImpl implements TarjetaService {
 		} catch (Exception ex) {
 			throw new InternalServiceException(ex.getMessage(), ex);
 		}
-	}
+	}*/
 
 	@Override
 	public void actualizarEstadoTarjeta(EstadoTarjeta estadoTarjeta) {
@@ -289,5 +330,58 @@ public class TarjetaServiceImpl implements TarjetaService {
 			throw new InternalServiceException(ex.getMessage(), ex);
 		}
 	}
+
+	@Override
+	public String verificarSolicitudes(String tipoDocumento, String nroDocumento) {
+	    // Obtiene el RUC del usuario autenticado
+	    String ruc = SecurityContextFacade.getAuthenticatedUser().getRuc();
+
+	    // Buscar solicitudes en estado "registrada"
+	    List<SolicitudTarjeta> solicitudesRegistradas = tarjetaMapper.buscarTodosSolicitudesTarjetaPendientes(
+	            TipoEstadoTarjeta.SOLICITUD_TARJETA_REGISTRADA.getCod(), ruc);
+
+	    // Buscar solicitudes en estado "autorizada"
+	    List<SolicitudTarjeta> solicitudesAutorizadas = tarjetaMapper.buscarTodosSolicitudesTarjetaPendientes(
+	            TipoEstadoTarjeta.SOLICITUD_TARJETA_AUTORIZADA.getCod(), ruc);
+
+	    // Buscar solicitudes en estado "enviada"
+	    List<SolicitudTarjeta> solicitudesEnviadas = tarjetaMapper.buscarTodosSolicitudesTarjetaPendientes(
+	            TipoEstadoTarjeta.SOLICITUD_TARJETA_ENVIADA.getCod(), ruc);
+
+	    // Verificar si el tipo y número de documento están en alguna de las listas
+	    if (existeEnLista(solicitudesRegistradas, tipoDocumento, nroDocumento)) {
+	        return "Este cliente ya tiene una solicitud pendiente de autorizar";
+	    }
+	    if (existeEnLista(solicitudesAutorizadas, tipoDocumento, nroDocumento)) {
+	        return "Este cliente ya tiene una solicitud autorizada pendiente de envio";
+	    }
+	    if (existeEnLista(solicitudesEnviadas, tipoDocumento, nroDocumento)) {
+	        return "Este cliente ya tiene una solicitud enviada en espera";
+	    }
+
+	    // Si no está en ninguna lista, devuelve null
+	    return null;
+	}
+
+	/**
+	 * Verifica si el tipo y número de documento están en la lista de solicitudes.
+	 *
+	 * @param solicitudes    La lista de solicitudes a verificar.
+	 * @param tipoDocumento  El tipo de documento a buscar.
+	 * @param nroDocumento   El número de documento a buscar.
+	 * @return true si el documento está en la lista, de lo contrario false.
+	 */
+	private boolean existeEnLista(List<SolicitudTarjeta> solicitudes, String tipoDocumento, String nroDocumento) {
+	    for (SolicitudTarjeta solicitud : solicitudes) {
+	        if (solicitud.getTipoDocumento().equals(tipoDocumento) &&
+	            solicitud.getNumDocumento().equals(nroDocumento)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+
+ 
 
 }

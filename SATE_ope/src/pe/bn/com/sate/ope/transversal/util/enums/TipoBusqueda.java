@@ -2,10 +2,12 @@ package pe.bn.com.sate.ope.transversal.util.enums;
 
 public enum TipoBusqueda {
 
-	NUM_TARJETA("N", "NÚMERO DE TARJETA", 16), DNI("1", "DNI", 8), CARNET_EXTRANJERIA(
+/*	NUM_TARJETA("N", "NÚMERO DE TARJETA", 16), DNI("1", "DNI", 8), CARNET_EXTRANJERIA(
 			"4", "CARNET DE EXTRANJERÍA", 12), CARNET_POLICIA_NACIONAL("2",
-			"CARNET DE POLICÍA NACIONAL", 9), PASAPORTTE("5", "PASAPORTE", 12);
-
+			"CARNET DE POLICÍA NACIONAL", 9), PASAPORTTE("5", "PASAPORTE", 12);*/
+	// TODO ENUM tipo busquedas
+	NUM_TARJETA("N", "NÚMERO DE TARJETA", 19), DNI("1", "DNI", 8), CARNET_EXTRANJERIA(
+			"4", "CARNET DE EXTRANJERÍA", 12)   ;
 	private String id;
 	private String descripcion;
 	private int length;

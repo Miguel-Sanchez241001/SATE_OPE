@@ -41,4 +41,6 @@ public interface TarjetaService {
 
 	public void bloquearTarjetaPorRobo(EstadoTarjeta estadoTarjeta,
 			Long idTarjeta, Long idCliente);
+
+	public String verificarSolicitudes(String tipoDocumento, String nroDocuemnto);
 }

@@ -11,7 +11,7 @@ public class DTOConsultaDatosExpediente {
     private String numTerminal;
     private String numReferencia;
     private String organizacion;
-    private String numTarjeta;
+    private String numCuenta;
     private String fechaExpiracion;
     private String codigoBloqueo;
     private String comercio;
@@ -82,13 +82,13 @@ public class DTOConsultaDatosExpediente {
         this.organizacion = organizacion;
     }
 
-    @XmlElement(name = "NumTarjeta")
-    public String getNumTarjeta() {
-        return numTarjeta;
+    @XmlElement(name = "NumCuenta")
+    public String getnumCuenta() {
+        return numCuenta;
     }
 
-    public void setNumTarjeta(String numTarjeta) {
-        this.numTarjeta = numTarjeta;
+    public void setnumCuenta(String numCuenta) {
+        this.numCuenta = numCuenta;
     }
 
     @XmlElement(name = "FechaExpiracion")
@@ -311,7 +311,7 @@ public class DTOConsultaDatosExpediente {
     public String toString() {
         return "DTOConsultaDatosExpediente [codEmisor=" + codEmisor + ", codUsuario=" + codUsuario 
                 + ", numTerminal=" + numTerminal + ", numReferencia=" + numReferencia 
-                + ", organizacion=" + organizacion + ", numTarjeta=" + numTarjeta 
+                + ", organizacion=" + organizacion + ", numCuenta=" + numCuenta 
                 + ", fechaExpiracion=" + fechaExpiracion + ", codigoBloqueo=" + codigoBloqueo 
                 + ", comercio=" + comercio + ", fechaTxnTerminal=" + fechaTxnTerminal 
                 + ", horaTxnTerminal=" + horaTxnTerminal + ", reservado=" + reservado 

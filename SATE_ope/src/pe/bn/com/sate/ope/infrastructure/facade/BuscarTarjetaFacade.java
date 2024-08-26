@@ -31,7 +31,8 @@ public class BuscarTarjetaFacade {
 		tarjeta.setMontoPorProcesar(saldoTarjeta.getImporteMora());
 		tarjeta.setDispEfectivoUsado(saldoTarjeta.getEfectivo()
 				- saldoTarjeta.getDispEfectivo());
-		tarjetaService.actualizarSaldos(tarjeta);
+		
+		// tarjetaService.actualizarSaldos(tarjeta);
 
 	}
 }

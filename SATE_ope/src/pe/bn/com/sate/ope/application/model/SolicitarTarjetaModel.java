@@ -70,13 +70,13 @@ public class SolicitarTarjetaModel {
 		return "El "
 				+ TipoDocumento
 						.tipoDocumentoBducLetras(tipoDocumentoSeleccionado)
-				+ " debe  tener "
+				+ " debe tener "
 				+ TipoDocumento.obtenerLength(tipoDocumentoSeleccionado)
-				+ " dÃ­gitos";
+				+ " dígitos";
 	}
 
 	public String obtenerDocumentoRequiredMessage() {
-		return "Ingrese un nÃºmero de "
+		return "Ingrese un número de "
 				+ TipoDocumento
 						.tipoDocumentoBducLetras(tipoDocumentoSeleccionado);
 	}

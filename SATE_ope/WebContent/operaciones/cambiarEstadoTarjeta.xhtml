@@ -35,10 +35,19 @@
 									var="item" itemLabel="#{item.descripcion}"
 									itemValue="#{item.id}" />
 							</p:selectOneMenu>
-							<p:inputText id="numDocumento" required="true"
+						<!-- 	<p:inputText id="numDocumento" required="true"
 								onkeypress="javascript:return jsValidarKey(event,/[0-9]/);"
 								value="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.numDocumento}"
 								maxlength="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaLength()}"
+								requiredMessage="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaRequiredMessage()}"
+								validatorMessage="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaValidatorMessage()}">
+								<f:validateLength
+									minimum="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaLength()}" />
+							</p:inputText> -->
+								<p:inputText id="numDocumento" required="true"
+								onkeypress="javascript:return jsValidarKey(event,/[0-9]/);"
+								value="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.numDocumento}"
+								maxlength="19"
 								requiredMessage="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaRequiredMessage()}"
 								validatorMessage="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.obtenerBusquedaValidatorMessage()}">
 								<f:validateLength
@@ -220,7 +229,7 @@
 						<p:column headerText="Tipo"
 							style="widht:50%; text-align:left;vertical-align: middle;">
 							<h:outputText
-								value="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.descripcionTipoTarjeta(firmante.tipoTarjeta)}" />
+								value="#{cambiarEstadoTarjetaController.cambiarEstadoTarjetaModel.descripcionTipoTarjeta(firmante.tipoTarjeta,firmante.diseno)}" />
 						</p:column>
 						<p:column headerText="Estado"
 							style="widht:50%; text-align:left;vertical-align: middle;">

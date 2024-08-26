@@ -11,6 +11,13 @@
 		</locale-config>
 		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 	</application>
+		<application>
+			<resource-bundle>
+            <base-name>cadenas.validaciones</base-name>
+            <var>valMsg</var>
+        </resource-bundle>
+
+	</application>
 	<lifecycle>
 		<phase-listener>pe.bn.com.sate.ope.application.view.LoginController</phase-listener>
 	</lifecycle>
