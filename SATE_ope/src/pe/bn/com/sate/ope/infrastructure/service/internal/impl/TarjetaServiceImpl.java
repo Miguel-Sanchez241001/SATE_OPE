@@ -25,6 +25,7 @@ import pe.bn.com.sate.ope.transversal.dto.sate.TarjetaResumen;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoBusqueda;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoEstadoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
 
 @Service
 public class TarjetaServiceImpl implements TarjetaService {
@@ -49,9 +50,13 @@ public class TarjetaServiceImpl implements TarjetaService {
 	public void registrarSolicitudTarjeta(Tarjeta tarjeta, Cliente cliente) {
 		try {
 			logger.info("Inicio metodo registrarSolicitudTarjeta ");
-			if (tarjetaMapper.cantidadTarjetasDisponiblesPorDocumento(
+		/*	if (tarjetaMapper.cantidadTarjetasDisponiblesPorDocumento(
 					cliente.getTipoDocumento(), cliente.getNroDocumento(),
-					SecurityContextFacade.getAuthenticatedUser().getRuc()) == 0) {
+					SecurityContextFacade.getAuthenticatedUser().getRuc()) == 0) {*/
+				
+				if(verificarTarjetasDisponiblesPorTipoTar(
+						cliente.getTipoDocumento(), cliente.getNroDocumento(),
+						SecurityContextFacade.getAuthenticatedUser().getRuc())){
 				if (cliente.getId() == null) {
 
 					clienteMapper.registrarCliente(cliente);
@@ -102,6 +107,28 @@ public class TarjetaServiceImpl implements TarjetaService {
 			throw new InternalServiceException(ex.getMessage(), ex);
 		}
 	}
+
+	private boolean verificarTarjetasDisponiblesPorTipoTar(String tipoDocumento, String nroDocuemnto, String ruc) {
+		 List<Tarjeta> tarjetasDelCliente = tarjetaMapper.buscarTarjetaPorTipoDocumento
+		    		(tipoDocumento,nroDocuemnto , ruc);
+		 int countTarjetasActivadas = 0;
+		 for (Tarjeta tarjetaExistente : tarjetasDelCliente) {
+  		        // Verificar si el estado de la tarjeta es activada, bloqueada o cancelada
+		        boolean tarjetaActiva = TipoEstadoTarjeta.TARJETA_ACTIVADA.getCod().equals(tarjetaExistente.getEstado()) ||
+		                                TipoEstadoTarjeta.TARJETA_BLOQUEADA.getCod().equals(tarjetaExistente.getEstado()) ||
+		                                TipoEstadoTarjeta.TARJETA_CANCELADA.getCod().equals(tarjetaExistente.getEstado());
+		        if(tarjetaActiva){
+		        	countTarjetasActivadas++;
+		        }
+ 		        
+		    }
+		 // TODO MAXIMO DE TARJETAS DISPONIBLES POR ENTIDAD
+		if (countTarjetasActivadas >=2) {
+			return false;
+		}else{
+			return true;
+		}
+ 	}
 
 	@Override
 	public List<SolicitudTarjeta> buscarTodosSolicitudTarjetaPendientes() {
@@ -362,6 +389,46 @@ public class TarjetaServiceImpl implements TarjetaService {
 	    // Si no está en ninguna lista, devuelve null
 	    return null;
 	}
+	
+	@Override
+	public String verificarTarjetasDisponible(String tipoDocumento,
+			String nroDocuemnto, Tarjeta tarjeta) {
+	    String ruc = SecurityContextFacade.getAuthenticatedUser().getRuc();
+	    TipoTarjeta typeTarActual = TipoTarjeta.fromCodigoYDiseno(tarjeta.getTipoTarjeta(), tarjeta.getDiseno());
+	   
+	    List<Tarjeta> tarjetasDelCliente = tarjetaMapper.buscarTarjetaPorTipoDocumento
+	    		(tipoDocumento,nroDocuemnto , ruc);
+		
+	    if (existeEnListaTarjetas(typeTarActual,tarjetasDelCliente)) {
+	        return "El solicitante ya tiene asignada una tarjeta empresarial del mismo tipo en la unidad ejecutora o empresa.";
+	    }
+		
+		return null;
+	}
+
+	private boolean existeEnListaTarjetas(TipoTarjeta typeTarActual, List<Tarjeta> tarjetasDelCliente) {
+
+	    if (typeTarActual == null) {
+	        return false; // Si el tipo de tarjeta actual no es válido, no se puede hacer la verificación.
+	    }
+
+	    // Recorrer la lista de tarjetas existentes del cliente
+	    for (Tarjeta tarjetaExistente : tarjetasDelCliente) {
+	        // Obtener el tipo de tarjeta de cada tarjeta existente
+	        TipoTarjeta tipoTarjetaExistente = TipoTarjeta.fromCodigoYDiseno(tarjetaExistente.getTipoTarjeta(), tarjetaExistente.getDiseno());
+	        // Verificar si el estado de la tarjeta es activada, bloqueada o cancelada
+	        boolean tarjetaActiva = TipoEstadoTarjeta.TARJETA_ACTIVADA.getCod().equals(tarjetaExistente.getEstado()) ||
+	                                TipoEstadoTarjeta.TARJETA_BLOQUEADA.getCod().equals(tarjetaExistente.getEstado()) ||
+	                                TipoEstadoTarjeta.TARJETA_CANCELADA.getCod().equals(tarjetaExistente.getEstado());
+
+	        // Comparar si coinciden el tipo de tarjeta y el diseño
+	        if (typeTarActual.equals(tipoTarjetaExistente) && tarjetaActiva    ) {
+	            return true; // Ya existe una tarjeta del mismo tipo y diseño
+	        }
+	    }
+
+	    return false; // No se encontró una tarjeta del mismo tipo y diseño
+	}
 
 	/**
 	 * Verifica si el tipo y número de documento están en la lista de solicitudes.
@@ -380,6 +447,8 @@ public class TarjetaServiceImpl implements TarjetaService {
 	    }
 	    return false;
 	}
+
+
 
 
  

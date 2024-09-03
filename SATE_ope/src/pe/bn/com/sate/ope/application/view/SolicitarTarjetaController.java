@@ -418,8 +418,8 @@ public class SolicitarTarjetaController implements Serializable {
         if (solicitarTarjetaModel.getPasoActual() == 0) {
             // Aquí agregas la lógica adicional que deseas validar
         	String resVerificacion = tarjetaService.verificarSolicitudes(
-            		solicitarTarjetaModel.getClienteSeleccionado().getTipoDocumento(),
-            		solicitarTarjetaModel.getClienteSeleccionado().getNroDocumento()
+            		solicitarTarjetaModel.getTipoDocumentoSeleccionado(),
+            		solicitarTarjetaModel.getNumDocumentoSeleccionado()
             		);
             if (resVerificacion != null) { // Reemplaza 'condicionAdicional' con tu lógica específica
                 UsefulWebApplication.mostrarMensajeJSF(
@@ -430,7 +430,21 @@ public class SolicitarTarjetaController implements Serializable {
             }
         }
     	
-    	
+        if (solicitarTarjetaModel.getPasoActual() == 2) {
+            // Aquí agregas la lógica adicional que deseas validar
+        	String resVerificacion = tarjetaService.verificarTarjetasDisponible(
+            		solicitarTarjetaModel.getTipoDocumentoSeleccionado(),
+            		solicitarTarjetaModel.getNumDocumentoSeleccionado(),
+            		solicitarTarjetaModel.getTarjeta()
+            		);
+            if (resVerificacion != null) { // Reemplaza 'condicionAdicional' con tu lógica específica
+                UsefulWebApplication.mostrarMensajeJSF(
+                    ConstantesGenerales.SEVERITY_ERROR,
+                    ConstantesGenerales.TITULO_ERROR_AGREGAR_PARAMETRO,
+                    resVerificacion);
+                return; // Salir del método si no se cumple la condición
+            }
+        }
         if (solicitarTarjetaModel.getPasoActual() != 0 || (!solicitarTarjetaModel.esTipoDocumentoDNI() || solicitarTarjetaModel.validarDNI())) {
             if (solicitarTarjetaModel.getPasoActual() < 3) {
                 solicitarTarjetaModel.setPasoActual(solicitarTarjetaModel.getPasoActual() + 1);

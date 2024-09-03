@@ -10,6 +10,7 @@
 		<result property="idCli" column="B06_ID_CLI" />
 		<result property="numTarjeta" column="B05_NUM_TARJETA" />
 		<result property="disposicionEfectivo" column="B05_DISP_EFECTIVO" />
+		<result property="porcentajeDisposicionEfectivo" column="B05_PORCENTAJE_DISP_EFECT" />
 		<result property="usoDispocionEfectivo" column="B05_USO_DISP_EFECT" />
 		<result property="usoExtranjero" column="B05_USO_EXTRANJERO" />
 		<result property="tipoTarjeta" column="B05_TIPO_TARJETA" />

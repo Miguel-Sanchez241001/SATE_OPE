@@ -63,7 +63,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             // Crea y configura los datos del correo.
             DatosCorreo datos = new DatosCorreo();
             datos.setAsunto("Acceso a Tarjeta Empresarial - Banco de la Nacion");
-            // TODO Cambiar Direccion de correo
+            // TODO CAMBIAR ======= > CORREO ELECTRONICO
             datos.setCorreoDestinatario("pra_msanchezs@bn.com.pe"); // Se puede cambiar por usuario.getCorreoLaboral() si es necesario.
 			//datos.setCorreoDestinatario(usuario.getCorreoLaboral());
 

@@ -9,6 +9,9 @@ public class Tarjeta {
 	private Long idCli;
 	private String numTarjeta; //
 	private String disposicionEfectivo;
+	private String porcentajeDisposicionEfectivo;
+	
+
 	private String usoDispocionEfectivo;
 	private String usoExtranjero;
 	private String tipoTarjeta;
@@ -65,7 +68,14 @@ public class Tarjeta {
 	public void setDescripcionUbicacion(String descripcionUbicacion) {
 		this.descripcionUbicacion = descripcionUbicacion;
 	}
+	public String getPorcentajeDisposicionEfectivo() {
+		return porcentajeDisposicionEfectivo;
+	}
 
+	public void setPorcentajeDisposicionEfectivo(
+			String porcentajeDisposicionEfectivo) {
+		this.porcentajeDisposicionEfectivo = porcentajeDisposicionEfectivo;
+	}
 	public String getMotivoBloqueo() {
 		return motivoBloqueo;
 	}

@@ -6,12 +6,12 @@ import java.util.List;
 
 public enum TipoTarjeta {
 
-	BLACK_COLIBRI("MC BLACK COLIBRI", "531013", "1"), BLACK_MACHUPICCHU(
-			"MC BLACK MACHUPICCHU", "531013", "2"), CORPORATE_SILUETA_PERU(
-		
-			"VIATICO", "530927", "3"), CORPORATE_COLIBRI(
-			"ENCARGO", "530927", "1"), CORPORATE_MACHUPICCHU(
-			"CAJA CHICA", "530927", "2");
+
+	   BLACK_COLIBRI("MC BLACK COLIBRI", "531013", "1"),
+	    BLACK_MACHUPICCHU("MC BLACK MACHUPICCHU", "531013", "2"),
+	    CORPORATE_COLIBRI("ENCARGO", "530927", "1"),
+	    CORPORATE_MACHUPICCHU("CAJA CHICA", "530927", "2"),
+	    CORPORATE_SILUETA_PERU("VIATICO", "530927", "3");
 
 	private String descripcion;
 	private String codigo;
@@ -43,7 +43,7 @@ public enum TipoTarjeta {
 		List<TipoTarjeta> listaTipoTarjeta = new ArrayList<TipoTarjeta>();
 		listaTipoTarjeta.add(TipoTarjeta.CORPORATE_SILUETA_PERU);
 		listaTipoTarjeta.add(TipoTarjeta.CORPORATE_COLIBRI);
-		listaTipoTarjeta.add(TipoTarjeta.CORPORATE_MACHUPICCHU);
+		//listaTipoTarjeta.add(TipoTarjeta.CORPORATE_MACHUPICCHU);
 		return listaTipoTarjeta;
 	}
 
@@ -61,5 +61,15 @@ public enum TipoTarjeta {
 			}
 		return "Ninguno";
 	}
+    public static TipoTarjeta fromCodigoYDiseno(String codigo, String diseno) {
+        if (codigo != null && diseno != null) {
+            for (TipoTarjeta tipoTarjeta : values()) {
+                if (codigo.equals(tipoTarjeta.getCodigo()) && diseno.equals(tipoTarjeta.getDiseno())) {
+                    return tipoTarjeta;
+                }
+            }
+        }
+        return null; // Devuelve null si no se encuentra ninguna coincidencia
+    }
 
 }

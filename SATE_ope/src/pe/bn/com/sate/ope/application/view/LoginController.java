@@ -204,10 +204,10 @@ public class LoginController implements PhaseListener, Serializable {
             logger.info("[loginController] - Fin método recuperarClave");
         } catch (InternalServiceException ise) {
             logger.error("Error en InternalServiceException: " + ise.getMessage());
-            UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, ConstantesGenerales.ERROR_PERSISTENCE_INTERNAL, ConstantesGenerales.ERROR_PERSISTENCE_INTERNAL);
+            UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR,  ise.getMessage(), ConstantesGenerales.ERROR_PERSISTENCE_INTERNAL);
         } catch (ServiceException se) {
             logger.error("Error en ServiceException: " + se.getMessage());
-            UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, ConstantesGenerales.ERROR_PERSISTENCE_GENERAL, ConstantesGenerales.ERROR_PERSISTENCE_GENERAL);
+            UsefulWebApplication.mostrarMensajeJSF(ConstantesGenerales.SEVERITY_ERROR, ConstantesGenerales.ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_SIMM, ConstantesGenerales.ERROR_PERSISTENCE_GENERAL);
         }
     }
 

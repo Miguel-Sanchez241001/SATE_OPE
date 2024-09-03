@@ -138,7 +138,7 @@ public class CrearUsuarioController implements Serializable {
 						UsefulWebApplication.mostrarMensajeJSF(
 								ConstantesGenerales.SEVERITY_INFO,
 								ConstantesGenerales.TITULO_MENSAJE,
-								"Se registro existosamente");
+								"Se registro exitosamente");
 					} catch (InternalServiceException ise) {
 						UsefulWebApplication.mostrarMensajeJSF(
 								ConstantesGenerales.SEVERITY_ERROR,
@@ -190,5 +190,9 @@ public class CrearUsuarioController implements Serializable {
 	public void setCrearUsuarioModel(CrearUsuarioModel crearUsuarioModel) {
 		this.crearUsuarioModel = crearUsuarioModel;
 	}
-
+	  public void reiniciarFormularioCliente() {
+	        logger.info("Reiniciando el formulario debido al cambio en el tipo de documento.");
+	        crearUsuarioModel.reiniciarDatosCliente();
+	        logger.info("Formulario reiniciado.");
+	    }
 }

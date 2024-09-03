@@ -10,6 +10,7 @@ public class ConstantesGenerales {
 
 	public static final String DESC_VERSIONES = "Versiones";
 	public static final String DESC_MENSAJES = "Mensajes";
+	public static final String PORCENTAJE_EFECTIVO = "10000"; // 2 decimales
 
 	/**
 	 * Constantes para los mensajes de validacion, operacion exitosa
@@ -168,6 +169,7 @@ public class ConstantesGenerales {
 	public static String ERROR_PERSISTENCE_GENERAL = "Error en la BD, consulte con el administrador.";
 	public static String ERROR_PERSISTENCE_INTERNAL = "Error en la BDSATE, consulte con el administrador.";
 	public static String ERROR_PERSISTENCE_EXTERNAL_BN_TABLAS = "Error en la BDSATE, consulte con el administrador.";
+	public static String ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_SIMM = "Error con WS Correos, consulte con el administrador.";
 	public static String ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_IGF = "Error con WS InterfaceGatewayFacade, consulte con el administrador.";
 	public static String ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_MC = "Error con WS MC, consulte con el administrador.";
 	public static String ERROR_PERSISTENCE_EXTERNAL_WEB_SERVICE_RENIEC = "Error con WS RENIEC, consulte con el administrador.";

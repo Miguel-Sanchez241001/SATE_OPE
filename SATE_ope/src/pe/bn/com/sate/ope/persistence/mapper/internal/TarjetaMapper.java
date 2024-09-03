@@ -22,6 +22,7 @@ public interface TarjetaMapper {
 			" B02_REP," +
 			" B06_ID_CLI," +
 			"B05_USO_DISP_EFECT," +
+			"B05_PORCENTAJE_DISP_EFECT," +
 			"B05_USO_EXTRANJERO," +
 			" B05_TIPO_TARJETA," +
 			"B05_OBSERVACIONES," +
@@ -37,7 +38,7 @@ public interface TarjetaMapper {
 			"B05_NUM_CELULAR, " +
 			"B05_FLAG_ACT_CONTACTO, " +
 			"B05_DISENO) "
-			+ "VALUES (#{idEmpresa},#{idUsu},#{idCli},#{usoDispocionEfectivo},#{usoExtranjero},#{tipoTarjeta},#{observaciones},#{tipoMoneda},#{entregaUbicacion},#{entregaAgenciaBN}, #{entregaUbigeo}, #{entregaDireccion}, #{entregaReferencia},#{fechaCreacion},#{email},#{operadorCelular},#{numeroCelular},#{flagActualizarContacto},#{diseno})")
+			+ "VALUES (#{idEmpresa},#{idUsu},#{idCli},#{usoDispocionEfectivo},#{porcentajeDisposicionEfectivo},#{usoExtranjero},#{tipoTarjeta},#{observaciones},#{tipoMoneda},#{entregaUbicacion},#{entregaAgenciaBN}, #{entregaUbigeo}, #{entregaDireccion}, #{entregaReferencia},#{fechaCreacion},#{email},#{operadorCelular},#{numeroCelular},#{flagActualizarContacto},#{diseno})")
 	//@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "B05_ID_TAR")
 	public void registrarTarjeta(Tarjeta tarjeta);
 
@@ -162,11 +163,22 @@ public interface TarjetaMapper {
 	@ResultMap("mapTarjeta")
 	public Tarjeta buscarTarjetaPorId(@Param("idTarjeta") Long idTarjeta);
 
-	@Select("SELECT BN05.* from bn_sate.bnsate05_tarjeta bn05 where bn05.b00_id_emp =#{idEmpresa} and bn05.b02_rep=#{idRep} and bn05.b06_id_cli=#{idCli}")
+/*	@Select("SELECT BN05.* from bn_sate.bnsate05_tarjeta bn05 where bn05.b00_id_emp =#{idEmpresa} and bn05.b02_rep=#{idRep} and bn05.b06_id_cli=#{idCli}")
 	@ResultMap("mapTarjeta")
 	public Tarjeta buscarTarjeta(@Param("idEmpresa") Long idEmpresa,@Param("idRep") Long idRep, @Param("idCli")Long idCli);
-	
-	
+	*/
+	// soporte de multiples tarjetas
+	@Select("SELECT * FROM ( " +
+	        "SELECT BN05.* " +
+	        "FROM bn_sate.bnsate05_tarjeta BN05 " +
+	        "WHERE BN05.b00_id_emp = #{idEmpresa} " +
+	        "AND BN05.b02_rep = #{idRep} " +
+	        "AND BN05.b06_id_cli = #{idCli} " +
+	        "ORDER BY BN05.B05_FEC_CREACION DESC " +
+	        ") WHERE ROWNUM = 1")
+	@ResultMap("mapTarjeta")
+	public Tarjeta buscarTarjeta(@Param("idEmpresa") Long idEmpresa, @Param("idRep") Long idRep, @Param("idCli") Long idCli);
+
 	
 	@Update("UPDATE BN_SATE.BNSATE05_TARJETA SET B05_EMAIL = #{email}, B05_OPERADOR_CELULAR = #{operadorCelular}, B05_NUM_CELULAR = #{numeroCelular}, B05_FLAG_ACT_CONTACTO = #{flagActualizarContacto} WHERE B05_ID_TAR = #{id}")
 	public void actualizarContacto(Tarjeta tarjeta);

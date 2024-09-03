@@ -88,7 +88,7 @@ public class ModificarUsuarioController implements Serializable {
 			UsefulWebApplication.mostrarMensajeJSF(
 					ConstantesGenerales.SEVERITY_INFO,
 					ConstantesGenerales.TITULO_MENSAJE,
-					"Se actualizó existosamente");
+					"Se actualizó exitosamente");
 			UsefulWebApplication.actualizarComponente("formCrearCuenta:msgs");
 		} catch (InternalServiceException ise) {
 			logger.error(ise.getMessage());

@@ -222,7 +222,8 @@ public class SolicitarTarjetaModel {
 		tarjeta = new Tarjeta();
 		tarjeta.setTipoMoneda(TipoMoneda.MONEDA_SOLES.getId());
 		tarjeta.setEntregaUbicacion("4");
-
+		tarjeta.setPorcentajeDisposicionEfectivo(ConstantesGenerales.PORCENTAJE_EFECTIVO);
+		
 		clienteSeleccionado = new Cliente();
 		listaOperadorMovil = Arrays.asList(OperadorMovil.values());
 		listaTipoDocumento = Arrays.asList(TipoDocumento.values());

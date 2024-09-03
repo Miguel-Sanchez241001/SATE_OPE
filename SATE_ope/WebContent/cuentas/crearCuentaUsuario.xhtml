@@ -32,13 +32,11 @@
 									onchange="onCall(this)"
 									value="#{crearUsuarioController.crearUsuarioModel.tipoDocumentoSeleccionado}"
 									required="true" requiredMessage="Seleccione tipo de documento">
-									<p:ajax event="change"
-										update="formCrearCuenta:itApPaterno
-									:formCrearCuenta:ipMaterno
-									:formCrearCuenta:itNombres
-									:formCrearCuenta:buscarBtn
-									:formCrearCuenta:numDocumento   
-									" />
+							 
+							      <p:ajax event="change"
+		                listener="#{crearUsuarioController.reiniciarFormularioCliente}"
+		                update="formCrearCuenta:pgPrincipal" />
+		                
 									<f:selectItems
 										value="#{crearUsuarioController.crearUsuarioModel.listaTipoDocumento}"
 										var="item" itemLabel="#{item.descripcion}"
@@ -95,7 +93,7 @@
 									validatorMessage="Número de celular no válido"
 									value="#{crearUsuarioController.crearUsuarioModel.usuarioSeleccionado.telefonoMovil}">
 									<p:ajax update="msgs" event="keyup" />
-									<f:validateRegex pattern="9[0-9]*" />
+						            <f:validateRegex pattern="^9[0-9]{8}$*" />
 								</p:inputText>
 
 								<h:outputText value="Correo electrónico *" />

@@ -46,7 +46,7 @@ public class AutorizarSolicitudesController implements Serializable {
 				UsefulWebApplication.mostrarMensajeJSF(
 						ConstantesGenerales.SEVERITY_INFO,
 						ConstantesGenerales.TITULO_MENSAJE,
-						"La(s) aprobacion(es) se realizaron existosamente.");
+						"La(s) aprobacion(es) se realizaron exitosamente.");
 			} else {
 				UsefulWebApplication.mostrarMensajeJSF(
 						ConstantesGenerales.SEVERITY_ERROR, "",
@@ -71,7 +71,7 @@ public class AutorizarSolicitudesController implements Serializable {
 				UsefulWebApplication.mostrarMensajeJSF(
 						ConstantesGenerales.SEVERITY_INFO,
 						ConstantesGenerales.TITULO_MENSAJE,
-						"Los rechazos se realizaron existosamente.");
+						"Los rechazos se realizaron exitosamente.");
 			} else {
 				UsefulWebApplication.mostrarMensajeJSF(
 						ConstantesGenerales.SEVERITY_ERROR, "",

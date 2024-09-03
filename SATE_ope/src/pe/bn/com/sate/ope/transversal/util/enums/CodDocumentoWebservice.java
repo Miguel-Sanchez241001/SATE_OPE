@@ -2,8 +2,9 @@ package pe.bn.com.sate.ope.transversal.util.enums;
 
 
 public enum CodDocumentoWebservice {
-	DNI("1", "DNI"), CARNET_EXTRANJERIA("4", "Carnet de Extranjeria"), PASAPORTE(
-			"5", "Pasaporte");
+	DNI("1", "DNI"), 
+	CARNET_EXTRANJERIA("4", "Carnet de Extranjeria");
+	//PASAPORTE("5", "Pasaporte");
 
 	private String codigo;
 	private String descripcion;

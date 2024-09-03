@@ -43,4 +43,5 @@ public interface TarjetaService {
 			Long idTarjeta, Long idCliente);
 
 	public String verificarSolicitudes(String tipoDocumento, String nroDocuemnto);
+	public String verificarTarjetasDisponible(String tipoDocumento, String nroDocuemnto, Tarjeta tarjeta);
 }

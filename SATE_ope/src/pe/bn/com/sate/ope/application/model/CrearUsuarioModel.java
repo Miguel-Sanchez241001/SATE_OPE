@@ -144,4 +144,11 @@ public class CrearUsuarioModel {
 		}
 	}
 
+	public void reiniciarDatosCliente() {
+		usuarioSeleccionado = new Usuario();
+ 		numDocumentoSeleccionado = null;
+		rolSeleccionado = null;
+ 		personaExiste = true;		
+	}
+
 }
