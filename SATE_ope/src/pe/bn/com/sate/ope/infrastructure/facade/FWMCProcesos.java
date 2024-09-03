@@ -85,11 +85,18 @@ public class FWMCProcesos {
 	// ANTIGUO
 	public List<MovimientoTarjeta> consultarMovimientosPorTarjeta(
 			String numTarjeta) throws ServiceException {
+<<<<<<< HEAD
 		// TODO CAMBIO de if para que envie para pruebas y no verifique
 		if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,
 				UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
 
 			// if (true) {
+=======
+			// 	TODO CAMBIO de if para que envie para pruebas y no verifique 
+		 if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
+
+		//if (true) {
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 			// TODO DATOS PARA SERVICIO WS IZIPAY
 			String codigoEmisor = parametros.getCodigoEmisorMc();
 			String codigoUsuario = parametros.getCodigoUsuarioMc();
@@ -139,6 +146,7 @@ public class FWMCProcesos {
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
+<<<<<<< HEAD
 				/*
 				 * JAXBContext jc = JAXBContext
 				 * .newInstance(ConsultaMovimientos.class); Unmarshaller
@@ -151,6 +159,17 @@ public class FWMCProcesos {
 				ConsultaMovimientos consultaMovimientos = SoapClientUtil
 						.convertirXMLAObjeto(reader, ConsultaMovimientos.class);
 				logger.info(consultaMovimientos.toString());
+=======
+				/*	JAXBContext jc = JAXBContext
+						.newInstance(ConsultaMovimientos.class);
+				Unmarshaller unmarshaller = jc.createUnmarshaller();
+				
+				ConsultaMovimientos consultaMovimientos = (ConsultaMovimientos) unmarshaller
+						.unmarshal(reader);*/
+				
+				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(reader,ConsultaMovimientos.class);
+				System.out.println(consultaMovimientos.toString());
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				if (consultaMovimientos.getCodRespuesta().equals("0000")) {
 					movimientosTarjeta = consultaMovimientos
@@ -167,7 +186,7 @@ public class FWMCProcesos {
 			}
 		} else {
 			throw new InternalServiceException(
-					"N�mero de tarjeta no encontrada");
+					"Número de tarjeta no encontrada");
 		}
 
 	}
@@ -271,11 +290,19 @@ public class FWMCProcesos {
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 
+<<<<<<< HEAD
 			StringReader reader = new StringReader(response.substring(
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 			ModificacionTarjeta modificacionTarjeta = SoapClientUtil
 					.convertirXMLAObjeto(reader, ModificacionTarjeta.class);
+=======
+
+			StringReader reader = new StringReader(response.substring(
+					response.indexOf("<Modificacion_Tarjeta>"),
+					response.indexOf("</soap:Body>")));
+			ModificacionTarjeta modificacionTarjeta = convertirXMLAObjeto(reader,ModificacionTarjeta.class);
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 			return modificacionTarjeta;
 		} catch (Exception ex) {
@@ -327,11 +354,20 @@ public class FWMCProcesos {
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 
+<<<<<<< HEAD
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 				ConsultaSaldos consultaSaldos = SoapClientUtil
 						.convertirXMLAObjeto(reader, ConsultaSaldos.class);
+=======
+				 
+
+				StringReader reader = new StringReader(response.substring(
+						response.indexOf("<Consulta_Saldos>"),
+						response.indexOf("</soap:Body>")));
+				ConsultaSaldos consultaSaldos = convertirXMLAObjeto(reader,ConsultaSaldos.class);
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				logger.info(consultaSaldos.toString());
 
@@ -348,10 +384,11 @@ public class FWMCProcesos {
 			}
 		} else {
 			throw new ExternalServiceMCProcesosException(
-					"N�mero de tarjeta no encontrada");
+					"Número de tarjeta no encontrada");
 		}
 	}
 
+<<<<<<< HEAD
 	// WS IZIPAY METODOS 2024
 	public DTOConsultaDatosTarjeta informacionDeTarjeta() throws InternalExcepcion,ExternalServiceMCProcesosException {
 
@@ -384,6 +421,38 @@ public class FWMCProcesos {
 		int attempt = 0;
 		boolean success = false;
 		DTOConsultaDatosTarjeta responseDTO = null;
+=======
+	
+	public void informacionDeTarjeta(int idTarjeta) {
+        logger.info("Iniciando consulta de información de tarjeta.");
+        
+        try {
+            // Implementación de la lógica para consultar la información de la tarjeta
+            logger.info("Consultando información de la tarjeta.");
+
+            // Simulación de la lógica de negocio
+            // Aquí iría el código que consulta y procesa la información de la tarjeta
+
+            logger.info("Consulta de información de tarjeta finalizada exitosamente.");
+
+        } catch (Exception ex) {
+            logger.error("Error al consultar información de tarjeta", ex);
+            // Manejo de excepciones específico si es necesario
+        } finally {
+            logger.info("Finalizando consulta de información de tarjeta");
+        }
+    }
+
+    public void bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) {
+        logger.info("Iniciando bloqueo de tarjeta.");
+        
+        try {
+            // Implementación de la lógica para bloquear la tarjeta
+            logger.info("Bloqueando tarjeta.");
+
+            // Simulación de la lógica de negocio
+            // Aquí iría el código que realiza el bloqueo de la tarjeta
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 		while (attempt < maxRetries && !success) {
 			attempt++;
@@ -396,6 +465,7 @@ public class FWMCProcesos {
 				throw e;
 			}
 
+<<<<<<< HEAD
 			try {
 
 				logger.info("Respuesta del servidor:");
@@ -405,12 +475,32 @@ public class FWMCProcesos {
 						.toString());
 				String resultado = SoapClientUtil.getTextFromElement(
 						documentoXML, dto.getResultTag());
+=======
+        } catch (Exception ex) {
+            logger.error("Error al bloquear la tarjeta", ex);
+            // Manejo de excepciones específico si es necesario
+        } finally {
+            logger.info("Finalizando bloqueo de tarjeta");
+        }
+    }
+
+    public void consultaDeMovimientoPorExpediente(int expedienteId) {
+        logger.info("Iniciando consulta de movimientos por expediente.");
+        
+        try {
+            // Implementación de la lógica para consultar movimientos por expediente
+            logger.info("Consultando movimientos para el expediente.");
+
+            // Simulación de la lógica de negocio
+            // Aquí iría el código que consulta y procesa los movimientos del expediente
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				String contenidoXML = resultado.substring(
 						resultado.indexOf(dto.getStartTag()),
 						resultado.indexOf(dto.getEndTag())
 								+ dto.getEndTag().length());
 
+<<<<<<< HEAD
 				responseDTO = SoapClientUtil.convertirXMLAObjeto(
 						new StringReader(contenidoXML),
 						DTOConsultaDatosTarjeta.class);
@@ -424,9 +514,29 @@ public class FWMCProcesos {
 
 		}
 		return responseDTO;
+=======
+        } catch (Exception ex) {
+            logger.error("Error al consultar movimientos por expediente", ex);
+            // Manejo de excepciones específico si es necesario
+        } finally {
+            logger.info("Finalizando consulta de movimientos por expediente");
+        }
+    }
+
+    public void consultaDeDatosPorExpediente(int expedienteId) {
+        logger.info("Iniciando consulta de datos por expediente.");
+        
+        try {
+            // Implementación de la lógica para consultar datos por expediente
+            logger.info("Consultando datos para el expediente.");
+
+            // Simulación de la lógica de negocio
+            // Aquí iría el código que consulta y procesa los datos del expediente
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 	}
 
+<<<<<<< HEAD
 	public DTOModificacionTarjeta bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) throws InternalExcepcion {
 		String wsdlUrl = parametros.getWsSoapMc();
 		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_BLOQUEO_TARJETA);
@@ -907,3 +1017,61 @@ public class FWMCProcesos {
 
 
 }
+=======
+        } catch (Exception ex) {
+            logger.error("Error al consultar datos por expediente", ex);
+            // Manejo de excepciones específico si es necesario
+        } finally {
+            logger.info("Finalizando consulta de datos por expediente");
+        }
+    }
+
+    public void actualizacionDeDatos(int idTarjeta, String nuevosDatos) {
+        logger.info("Iniciando actualización de datos para la tarjeta.");
+        
+        try {
+            // Implementación de la lógica para actualizar datos de la tarjeta
+            logger.info("Actualizando datos para la tarjeta.");
+
+            // Simulación de la lógica de negocio
+            // Aquí iría el código que actualiza los datos de la tarjeta
+
+            logger.info("Actualización de datos finalizada exitosamente.");
+
+        } catch (Exception ex) {
+            logger.error("Error al actualizar datos de la tarjeta", ex);
+            // Manejo de excepciones específico si es necesario
+        } finally {
+            logger.info("Finalizando actualización de datos para la tarjeta");
+        }
+    }
+
+	
+	
+	
+    public <T> T convertirXMLAObjeto(StringReader reader2, Class<T> class1) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(class1);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        return (T) unmarshaller.unmarshal(reader2);
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+>>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
