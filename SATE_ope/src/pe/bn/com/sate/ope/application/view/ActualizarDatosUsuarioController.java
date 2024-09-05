@@ -105,7 +105,7 @@ public class ActualizarDatosUsuarioController implements Serializable {
 			UsefulWebApplication.mostrarMensajeJSF(
 					ConstantesGenerales.SEVERITY_ERROR,
 					ConstantesGenerales.TITULO_ERROR_AGREGAR_PARAMETRO,
-					ConstantesGenerales.ERROR_PERSISTENCE_GENERAL);
+					se.getMessage());
 		}
 	}
 

@@ -85,18 +85,11 @@ public class FWMCProcesos {
 	// ANTIGUO
 	public List<MovimientoTarjeta> consultarMovimientosPorTarjeta(
 			String numTarjeta) throws ServiceException {
-<<<<<<< HEAD
 		// TODO CAMBIO de if para que envie para pruebas y no verifique
 		if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,
 				UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
 
 			// if (true) {
-=======
-			// 	TODO CAMBIO de if para que envie para pruebas y no verifique 
-		 if (tarjetaMapper.buscarTarjetaPorNumeroTarjeta(numTarjeta,	UsefulWebApplication.obtenerUsuario().getRuc()) != null) {
-
-		//if (true) {
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 			// TODO DATOS PARA SERVICIO WS IZIPAY
 			String codigoEmisor = parametros.getCodigoEmisorMc();
 			String codigoUsuario = parametros.getCodigoUsuarioMc();
@@ -146,7 +139,6 @@ public class FWMCProcesos {
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Movimientos>"),
 						response.indexOf("</soap:Body>")));
-<<<<<<< HEAD
 				/*
 				 * JAXBContext jc = JAXBContext
 				 * .newInstance(ConsultaMovimientos.class); Unmarshaller
@@ -159,17 +151,6 @@ public class FWMCProcesos {
 				ConsultaMovimientos consultaMovimientos = SoapClientUtil
 						.convertirXMLAObjeto(reader, ConsultaMovimientos.class);
 				logger.info(consultaMovimientos.toString());
-=======
-				/*	JAXBContext jc = JAXBContext
-						.newInstance(ConsultaMovimientos.class);
-				Unmarshaller unmarshaller = jc.createUnmarshaller();
-				
-				ConsultaMovimientos consultaMovimientos = (ConsultaMovimientos) unmarshaller
-						.unmarshal(reader);*/
-				
-				ConsultaMovimientos consultaMovimientos = convertirXMLAObjeto(reader,ConsultaMovimientos.class);
-				System.out.println(consultaMovimientos.toString());
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				if (consultaMovimientos.getCodRespuesta().equals("0000")) {
 					movimientosTarjeta = consultaMovimientos
@@ -290,19 +271,11 @@ public class FWMCProcesos {
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 
-<<<<<<< HEAD
 			StringReader reader = new StringReader(response.substring(
 					response.indexOf("<Modificacion_Tarjeta>"),
 					response.indexOf("</soap:Body>")));
 			ModificacionTarjeta modificacionTarjeta = SoapClientUtil
 					.convertirXMLAObjeto(reader, ModificacionTarjeta.class);
-=======
-
-			StringReader reader = new StringReader(response.substring(
-					response.indexOf("<Modificacion_Tarjeta>"),
-					response.indexOf("</soap:Body>")));
-			ModificacionTarjeta modificacionTarjeta = convertirXMLAObjeto(reader,ModificacionTarjeta.class);
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 			return modificacionTarjeta;
 		} catch (Exception ex) {
@@ -354,20 +327,11 @@ public class FWMCProcesos {
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 
-<<<<<<< HEAD
 				StringReader reader = new StringReader(response.substring(
 						response.indexOf("<Consulta_Saldos>"),
 						response.indexOf("</soap:Body>")));
 				ConsultaSaldos consultaSaldos = SoapClientUtil
 						.convertirXMLAObjeto(reader, ConsultaSaldos.class);
-=======
-				 
-
-				StringReader reader = new StringReader(response.substring(
-						response.indexOf("<Consulta_Saldos>"),
-						response.indexOf("</soap:Body>")));
-				ConsultaSaldos consultaSaldos = convertirXMLAObjeto(reader,ConsultaSaldos.class);
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				logger.info(consultaSaldos.toString());
 
@@ -388,7 +352,6 @@ public class FWMCProcesos {
 		}
 	}
 
-<<<<<<< HEAD
 	// WS IZIPAY METODOS 2024
 	public DTOConsultaDatosTarjeta informacionDeTarjeta() throws InternalExcepcion,ExternalServiceMCProcesosException {
 
@@ -421,38 +384,6 @@ public class FWMCProcesos {
 		int attempt = 0;
 		boolean success = false;
 		DTOConsultaDatosTarjeta responseDTO = null;
-=======
-	
-	public void informacionDeTarjeta(int idTarjeta) {
-        logger.info("Iniciando consulta de informaciÃ³n de tarjeta.");
-        
-        try {
-            // ImplementaciÃ³n de la lÃ³gica para consultar la informaciÃ³n de la tarjeta
-            logger.info("Consultando informaciÃ³n de la tarjeta.");
-
-            // SimulaciÃ³n de la lÃ³gica de negocio
-            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa la informaciÃ³n de la tarjeta
-
-            logger.info("Consulta de informaciÃ³n de tarjeta finalizada exitosamente.");
-
-        } catch (Exception ex) {
-            logger.error("Error al consultar informaciÃ³n de tarjeta", ex);
-            // Manejo de excepciones especÃ­fico si es necesario
-        } finally {
-            logger.info("Finalizando consulta de informaciÃ³n de tarjeta");
-        }
-    }
-
-    public void bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) {
-        logger.info("Iniciando bloqueo de tarjeta.");
-        
-        try {
-            // ImplementaciÃ³n de la lÃ³gica para bloquear la tarjeta
-            logger.info("Bloqueando tarjeta.");
-
-            // SimulaciÃ³n de la lÃ³gica de negocio
-            // AquÃ­ irÃ­a el cÃ³digo que realiza el bloqueo de la tarjeta
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 		while (attempt < maxRetries && !success) {
 			attempt++;
@@ -465,7 +396,6 @@ public class FWMCProcesos {
 				throw e;
 			}
 
-<<<<<<< HEAD
 			try {
 
 				logger.info("Respuesta del servidor:");
@@ -475,68 +405,28 @@ public class FWMCProcesos {
 						.toString());
 				String resultado = SoapClientUtil.getTextFromElement(
 						documentoXML, dto.getResultTag());
-=======
-        } catch (Exception ex) {
-            logger.error("Error al bloquear la tarjeta", ex);
-            // Manejo de excepciones especÃ­fico si es necesario
-        } finally {
-            logger.info("Finalizando bloqueo de tarjeta");
-        }
-    }
-
-    public void consultaDeMovimientoPorExpediente(int expedienteId) {
-        logger.info("Iniciando consulta de movimientos por expediente.");
-        
-        try {
-            // ImplementaciÃ³n de la lÃ³gica para consultar movimientos por expediente
-            logger.info("Consultando movimientos para el expediente.");
-
-            // SimulaciÃ³n de la lÃ³gica de negocio
-            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa los movimientos del expediente
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 				String contenidoXML = resultado.substring(
 						resultado.indexOf(dto.getStartTag()),
 						resultado.indexOf(dto.getEndTag())
 								+ dto.getEndTag().length());
 
-<<<<<<< HEAD
 				responseDTO = SoapClientUtil.convertirXMLAObjeto(
 						new StringReader(contenidoXML),
 						DTOConsultaDatosTarjeta.class);
 
 				logger.info("Objeto de respuesta: " + responseDTO);
 				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
+				logger.info("Conexiï¿½n exitosa en el intento " + attempt);
 			} catch (InternalExcepcion e) {
 				throw e;
 			}
 
 		}
 		return responseDTO;
-=======
-        } catch (Exception ex) {
-            logger.error("Error al consultar movimientos por expediente", ex);
-            // Manejo de excepciones especÃ­fico si es necesario
-        } finally {
-            logger.info("Finalizando consulta de movimientos por expediente");
-        }
-    }
-
-    public void consultaDeDatosPorExpediente(int expedienteId) {
-        logger.info("Iniciando consulta de datos por expediente.");
-        
-        try {
-            // ImplementaciÃ³n de la lÃ³gica para consultar datos por expediente
-            logger.info("Consultando datos para el expediente.");
-
-            // SimulaciÃ³n de la lÃ³gica de negocio
-            // AquÃ­ irÃ­a el cÃ³digo que consulta y procesa los datos del expediente
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2
 
 	}
 
-<<<<<<< HEAD
 	public DTOModificacionTarjeta bloqueoDeTarjeta(int idTarjeta, String motivoBloqueo) throws InternalExcepcion {
 		String wsdlUrl = parametros.getWsSoapMc();
 		DTOwservice dto = new DTOwservice(ConstantesWS.SOACTION_BLOQUEO_TARJETA);
@@ -608,7 +498,7 @@ public class FWMCProcesos {
 
 				logger.info("Objeto de respuesta: " + responseDTO);
 				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
+				logger.info("Conexiï¿½n exitosa en el intento " + attempt);
 			} catch (InternalExcepcion e) {
 				throw e;
 			}
@@ -687,7 +577,7 @@ public class FWMCProcesos {
 
 				logger.info("Objeto de respuesta: " + responseDTO);
 				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
+				logger.info("Conexiï¿½n exitosa en el intento " + attempt);
 			} catch (InternalExcepcion e) {
 				throw e;
 			}
@@ -767,7 +657,7 @@ public class FWMCProcesos {
 
 				logger.info("Objeto de respuesta: " + responseDTO);
 				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
+				logger.info("Conexiï¿½n exitosa en el intento " + attempt);
 			} catch (InternalExcepcion e) {
 				throw e;
 			}
@@ -847,7 +737,7 @@ public class FWMCProcesos {
 
 				logger.info("Objeto de respuesta: " + responseDTO);
 				success = true;
-				logger.info("Conexión exitosa en el intento " + attempt);
+				logger.info("Conexiï¿½n exitosa en el intento " + attempt);
 			} catch (InternalExcepcion e) {
 				throw e;
 			}
@@ -861,7 +751,7 @@ public class FWMCProcesos {
 	    boolean success = false;
 	    StringBuilder resultadoFallos = new StringBuilder();
 
-	    // Probar cada método secuencialmente 5 veces
+	    // Probar cada mï¿½todo secuencialmente 5 veces
 	    for (int i = 0; i < 5; i++) {
 	        int fallidos = 0;
 
@@ -872,14 +762,14 @@ public class FWMCProcesos {
 	                if (success) break;
 	            } catch (ExternalServiceMCProcesosException e) {
 	                fallidos++;
-	                resultadoFallos.append("tryInformacionDeTarjeta falló en el intento ")
+	                resultadoFallos.append("tryInformacionDeTarjeta fallï¿½ en el intento ")
 	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
 	                logger.error("Error en intento " + attempt + " de tryInformacionDeTarjeta: " + e.getMessage(), e);
 	            }
 	        }
 	        resultadoFallos.append("tryInformacionDeTarjeta intentado ").append(fallidos).append(" veces.\n");
 
-	        //if (success) break; // Salir si se ha tenido éxito en el método
+	        //if (success) break; // Salir si se ha tenido ï¿½xito en el mï¿½todo
 
 	        // Probar tryBloqueoDeTarjeta
 	        fallidos = 0;
@@ -889,7 +779,7 @@ public class FWMCProcesos {
 	                if (success) break;
 	            } catch (ExternalServiceMCProcesosException e) {
 	                fallidos++;
-	                resultadoFallos.append("tryBloqueoDeTarjeta falló en el intento ")
+	                resultadoFallos.append("tryBloqueoDeTarjeta fallï¿½ en el intento ")
 	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
 	                logger.error("Error en intento " + attempt + " de tryBloqueoDeTarjeta: " + e.getMessage(), e);
 	            }
@@ -906,7 +796,7 @@ public class FWMCProcesos {
 	                if (success) break;
 	            } catch (ExternalServiceMCProcesosException e) {
 	                fallidos++;
-	                resultadoFallos.append("tryConsultaDeMovimientoPorExpediente falló en el intento ")
+	                resultadoFallos.append("tryConsultaDeMovimientoPorExpediente fallï¿½ en el intento ")
 	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
 	                logger.error("Error en intento " + attempt + " de tryConsultaDeMovimientoPorExpediente: " + e.getMessage(), e);
 	            }
@@ -923,7 +813,7 @@ public class FWMCProcesos {
 	               if (success) break;
 	            } catch (ExternalServiceMCProcesosException e) {
 	                fallidos++;
-	                resultadoFallos.append("tryConsultaDeDatosPorExpediente falló en el intento ")
+	                resultadoFallos.append("tryConsultaDeDatosPorExpediente fallï¿½ en el intento ")
 	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
 	                logger.error("Error en intento " + attempt + " de tryConsultaDeDatosPorExpediente: " + e.getMessage(), e);
 	            }
@@ -940,7 +830,7 @@ public class FWMCProcesos {
 	                if (success) break;
 	            } catch (ExternalServiceMCProcesosException e) {
 	                fallidos++;
-	                resultadoFallos.append("tryActualizacionDeDatos falló en el intento ")
+	                resultadoFallos.append("tryActualizacionDeDatos fallï¿½ en el intento ")
 	                        .append(attempt).append(": ").append(e.getMessage()).append("\n");
 	                logger.error("Error en intento " + attempt + " de tryActualizacionDeDatos: " + e.getMessage(), e);
 	            }
@@ -951,10 +841,10 @@ public class FWMCProcesos {
 	    }
 
 	    if (!success) {
-	        logger.error("Todos los métodos fallaron después de múltiples intentos.\n" + resultadoFallos.toString());
+	        logger.error("Todos los mï¿½todos fallaron despuï¿½s de mï¿½ltiples intentos.\n" + resultadoFallos.toString());
 	        throw new ExternalServiceMCProcesosException("Todos los intentos fallaron para obtener el DTO:\n" + resultadoFallos.toString());
 	    } else {
-	        logger.info("Método ejecutado con éxito después de múltiples intentos.");
+	        logger.info("Mï¿½todo ejecutado con ï¿½xito despuï¿½s de mï¿½ltiples intentos.");
 	    }
 	}
 
@@ -963,10 +853,10 @@ public class FWMCProcesos {
 	private boolean tryInformacionDeTarjeta() {
 	    try {
 	        DTOConsultaDatosTarjeta responseDTO = informacionDeTarjeta();
-	        logger.info("informacionDeTarjeta ejecutado con éxito: " + responseDTO);
+	        logger.info("informacionDeTarjeta ejecutado con ï¿½xito: " + responseDTO);
 	        return true;
 	    } catch (Exception e) {
-	        logger.warn("Falló el método informacionDeTarjeta: " + e.getMessage());
+	        logger.warn("Fallï¿½ el mï¿½todo informacionDeTarjeta: " + e.getMessage());
 	        return false;
 	    }
 	}
@@ -974,10 +864,10 @@ public class FWMCProcesos {
 	private boolean tryBloqueoDeTarjeta() {
 	    try {
 	        DTOModificacionTarjeta responseDTO = bloqueoDeTarjeta(1, "Robo");
-	        logger.info("bloqueoDeTarjeta ejecutado con éxito: " + responseDTO);
+	        logger.info("bloqueoDeTarjeta ejecutado con ï¿½xito: " + responseDTO);
 	        return true;
 	    } catch (Exception e) {
-	        logger.warn("Falló el método bloqueoDeTarjeta: " + e.getMessage());
+	        logger.warn("Fallï¿½ el mï¿½todo bloqueoDeTarjeta: " + e.getMessage());
 	        return false;
 	    }
 	}
@@ -985,10 +875,10 @@ public class FWMCProcesos {
 	private boolean tryConsultaDeMovimientoPorExpediente() {
 	    try {
 	        DTOConsultaMovimientosExpediente responseDTO = consultaDeMovimientoPorExpediente(1);
-	        logger.info("consultaDeMovimientoPorExpediente ejecutado con éxito: " + responseDTO);
+	        logger.info("consultaDeMovimientoPorExpediente ejecutado con ï¿½xito: " + responseDTO);
 	        return true;
 	    } catch (Exception e) {
-	        logger.warn("Falló el método consultaDeMovimientoPorExpediente: " + e.getMessage());
+	        logger.warn("Fallï¿½ el mï¿½todo consultaDeMovimientoPorExpediente: " + e.getMessage());
 	        return false;
 	    }
 	}
@@ -996,10 +886,10 @@ public class FWMCProcesos {
 	private boolean tryConsultaDeDatosPorExpediente() {
 	    try {
 	        DTOConsultaDatosExpediente responseDTO = consultaDeDatosPorExpediente(1);
-	        logger.info("consultaDeDatosPorExpediente ejecutado con éxito: " + responseDTO);
+	        logger.info("consultaDeDatosPorExpediente ejecutado con ï¿½xito: " + responseDTO);
 	        return true;
 	    } catch (Exception e) {
-	        logger.warn("Falló el método consultaDeDatosPorExpediente: " + e.getMessage());
+	        logger.warn("Fallï¿½ el mï¿½todo consultaDeDatosPorExpediente: " + e.getMessage());
 	        return false;
 	    }
 	}
@@ -1007,71 +897,13 @@ public class FWMCProcesos {
 	private boolean tryActualizacionDeDatos() {
 	    try {
 	        DTOModificacionClientes responseDTO = actualizacionDeDatos(1, "nuevosDatos");
-	        logger.info("actualizacionDeDatos ejecutado con éxito: " + responseDTO);
+	        logger.info("actualizacionDeDatos ejecutado con ï¿½xito: " + responseDTO);
 	        return true;
 	    } catch (Exception e) {
-	        logger.warn("Falló el método actualizacionDeDatos: " + e.getMessage());
+	        logger.warn("Fallï¿½ el mï¿½todo actualizacionDeDatos: " + e.getMessage());
 	        return false;
 	    }
 	}
 
 
 }
-=======
-        } catch (Exception ex) {
-            logger.error("Error al consultar datos por expediente", ex);
-            // Manejo de excepciones especÃ­fico si es necesario
-        } finally {
-            logger.info("Finalizando consulta de datos por expediente");
-        }
-    }
-
-    public void actualizacionDeDatos(int idTarjeta, String nuevosDatos) {
-        logger.info("Iniciando actualizaciÃ³n de datos para la tarjeta.");
-        
-        try {
-            // ImplementaciÃ³n de la lÃ³gica para actualizar datos de la tarjeta
-            logger.info("Actualizando datos para la tarjeta.");
-
-            // SimulaciÃ³n de la lÃ³gica de negocio
-            // AquÃ­ irÃ­a el cÃ³digo que actualiza los datos de la tarjeta
-
-            logger.info("ActualizaciÃ³n de datos finalizada exitosamente.");
-
-        } catch (Exception ex) {
-            logger.error("Error al actualizar datos de la tarjeta", ex);
-            // Manejo de excepciones especÃ­fico si es necesario
-        } finally {
-            logger.info("Finalizando actualizaciÃ³n de datos para la tarjeta");
-        }
-    }
-
-	
-	
-	
-    public <T> T convertirXMLAObjeto(StringReader reader2, Class<T> class1) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(class1);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (T) unmarshaller.unmarshal(reader2);
-    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
->>>>>>> 29c31b5bf3e6f2c67c3ce51d97e2989b42423af2

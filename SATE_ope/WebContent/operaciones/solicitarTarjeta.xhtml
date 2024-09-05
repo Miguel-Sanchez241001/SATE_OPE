@@ -134,13 +134,19 @@
 		            locale="es"
 		            style="margin-left:20px;"
 		            readonlyInput="true"
+		            
+ 		            
+		            placeholder="DD/MM/AAAA"
 		            disabled="#{solicitarTarjetaController.solicitarTarjetaModel.esTipoDocumentoDNI()}"
 		            navigator="true"
 		            required="true"
 		            requiredMessage="#{valMsg['required.fechaNacimiento']}"
 		            value="#{solicitarTarjetaController.solicitarTarjetaModel.clienteSeleccionado.fechaNacimiento}"
 		            pattern="dd/MM/yyyy"
-		            mask="true" />
+		            mask="true" 
+		            mode="popup"
+		            showButtonPanel="true"
+		            />
 		
 		        <h:outputText value="Sexo *" />
 		        <h:outputText value="Estado civil *" style="margin-left:20px;" />
@@ -286,10 +292,11 @@
 							<h3 style="text-align: center">Datos de la tarjeta</h3>
 							<div class="dashed"></div>
 
-							<p:panelGrid columns="2" style="margin:auto;">
+							<p:panelGrid columns="3" style="margin:auto;">
 								<h:outputText value="Disposición de efectivo? *" />
  								<h:outputText value="Tipo de moneda *" style="margin-left:20px;" />								
-								
+								<h:outputText value="Uso en Compras por Internet *" style="margin-left:20px;" />								
+	
 								<p:selectOneMenu id="disposicionEfectivo" style="width:162px"
 									required="true"
 									requiredMessage="#{valMsg['required.disposicionEfectivo']}"
@@ -310,10 +317,19 @@
 										var="item" itemLabel="#{item.descripcion}"
 										itemValue="#{item.id}" />
 								</p:selectOneMenu>
-
+								<p:selectOneMenu style="width:162px;margin-left:20px;" id="usoComprasWeb"
+									required="true"
+									requiredMessage="#{valMsg['required.usoComprasWeb']}"
+									value="#{solicitarTarjetaController.solicitarTarjetaModel.tarjeta.usoComprasWeb}">
+									<f:selectItem itemLabel="Seleccione" itemValue="#{null}" />
+									<f:selectItem itemLabel="SI" itemValue="SI" />
+									<f:selectItem itemLabel="NO" itemValue="NO" />
+								</p:selectOneMenu>
+								
+								
 								<h:outputText value="Uso en el extranjero? *" />
 								<h:outputText value="Tipo de tarjeta *"	 style="margin-left:20px;" />
- 								
+ 								<h:outputText value="Tipo de gasto *"	 style="margin-left:20px;" />
 								<p:selectOneMenu style="width:162px" id="usoExtranjero"
 									required="true"
 									requiredMessage="#{valMsg['required.usoExtranjero']}"
@@ -324,20 +340,33 @@
 									<f:selectItem itemLabel="SI" itemValue="SI" />
 									<f:selectItem itemLabel="NO" itemValue="NO" />
 								</p:selectOneMenu>
+								
 								<p:selectOneMenu style="width:162px;margin-left:20px;"
 									id="somTipoTarjeta" required="true"
 									requiredMessage="#{valMsg['required.tipoTarjeta']}"
 									value="#{solicitarTarjetaController.solicitarTarjetaModel.tipoTarjetaSeleccionada}"
-									colspan="2">
+									 >
 									<f:selectItem itemLabel="Seleccione" itemValue="#{null}" />
-									<p:ajax
-										listener="#{solicitarTarjetaController.fijarTipoTarjetaYDiseno()}" />
+									<p:ajax update=":formSolicitarTarjeta:somTipoGasto"
+										listener="#{solicitarTarjetaController.buscarTipoTarjetaNegocio()}" />
 									<f:selectItems
 										value="#{solicitarTarjetaController.solicitarTarjetaModel.listaTipoTarjeta}"
 										var="item" itemLabel="#{item.descripcion}" itemValue="#{item}" />
 								</p:selectOneMenu>
  								
-						 
+ 								
+						 	<p:selectOneMenu style="width:162px;margin-left:20px;"
+									id="somTipoGasto" required="true"
+									requiredMessage="#{valMsg['required.tipoTarjetaGasto']}"
+									value="#{solicitarTarjetaController.solicitarTarjetaModel.tipoTarjetaNegocioSeleccionada}"
+									 >
+									<f:selectItem itemLabel="Seleccione" itemValue="#{null}" />
+									<p:ajax
+										listener="#{solicitarTarjetaController.fijarTipoTarjetaYDiseno()}" />
+									<f:selectItems
+										value="#{solicitarTarjetaController.solicitarTarjetaModel.listaTipoTarjetaNegocio}"
+										var="item" itemLabel="#{item.descripcion}" itemValue="#{item}" />
+								</p:selectOneMenu>
 
 								<h:outputText value="Observaciones" />
 								<p:inputTextarea id="observaciones" styleClass="text-area"
@@ -358,7 +387,7 @@
 
 								<p:commandButton id="siguiente2" value="Siguiente"
 									style="float:right;" styleClass="btnGrande"
-									process="@this, disposicionEfectivo, tipoMoneda, usoExtranjero, somTipoTarjeta, observaciones"
+									process="@this, disposicionEfectivo, tipoMoneda, usoExtranjero,usoComprasWeb, somTipoTarjeta, somTipoGasto,observaciones"
 									actionListener="#{solicitarTarjetaController.avanzarPaso()}"
 									update="msgs :formSolicitarTarjeta"
 									onclick="statusDialog.show();"
@@ -545,7 +574,7 @@
 					if (tecla == 8 || tecla == 9 || tecla == 13) {
 						return true;
 					}
-					var patron = /^[a-zA-Z]*$/;
+					var patron = /^[a-zA-Z\s]*$/;
 					var tecla_final = String.fromCharCode(tecla);
 					return patron.test(tecla_final);
 				}

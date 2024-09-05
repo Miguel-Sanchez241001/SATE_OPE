@@ -68,6 +68,9 @@ public class ConstantesGenerales {
 	public static final String USO_EXTRANJERO = "SI";
 	public static final String USO_NACIONAL = "NO";
 
+	public static final String BIM_CORPORATE = "530927";
+	public static final String BIM_BLACK = "531013";
+	
 	public static final String ENTREGA_AGENCIA_BN = "4";
 	public static final String ENTREGA_UNIDAD_EJECUTORA = "3";
 

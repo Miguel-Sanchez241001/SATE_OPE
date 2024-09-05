@@ -24,6 +24,7 @@ public interface TarjetaMapper {
 			"B05_USO_DISP_EFECT," +
 			"B05_PORCENTAJE_DISP_EFECT," +
 			"B05_USO_EXTRANJERO," +
+			"B05_USO_COMPRAS_WEB," +
 			" B05_TIPO_TARJETA," +
 			"B05_OBSERVACIONES," +
 			"B05_TIPO_MONEDA, " +
@@ -38,7 +39,7 @@ public interface TarjetaMapper {
 			"B05_NUM_CELULAR, " +
 			"B05_FLAG_ACT_CONTACTO, " +
 			"B05_DISENO) "
-			+ "VALUES (#{idEmpresa},#{idUsu},#{idCli},#{usoDispocionEfectivo},#{porcentajeDisposicionEfectivo},#{usoExtranjero},#{tipoTarjeta},#{observaciones},#{tipoMoneda},#{entregaUbicacion},#{entregaAgenciaBN}, #{entregaUbigeo}, #{entregaDireccion}, #{entregaReferencia},#{fechaCreacion},#{email},#{operadorCelular},#{numeroCelular},#{flagActualizarContacto},#{diseno})")
+			+ "VALUES (#{idEmpresa},#{idUsu},#{idCli},#{usoDispocionEfectivo},#{porcentajeDisposicionEfectivo},#{usoExtranjero},#{usoComprasWeb},#{tipoTarjeta},#{observaciones},#{tipoMoneda},#{entregaUbicacion},#{entregaAgenciaBN}, #{entregaUbigeo}, #{entregaDireccion}, #{entregaReferencia},#{fechaCreacion},#{email},#{operadorCelular},#{numeroCelular},#{flagActualizarContacto},#{diseno})")
 	//@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "B05_ID_TAR")
 	public void registrarTarjeta(Tarjeta tarjeta);
 

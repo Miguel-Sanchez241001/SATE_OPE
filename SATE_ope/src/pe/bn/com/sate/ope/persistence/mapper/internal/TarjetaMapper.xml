@@ -13,6 +13,7 @@
 		<result property="porcentajeDisposicionEfectivo" column="B05_PORCENTAJE_DISP_EFECT" />
 		<result property="usoDispocionEfectivo" column="B05_USO_DISP_EFECT" />
 		<result property="usoExtranjero" column="B05_USO_EXTRANJERO" />
+		<result property="usoComprasWeb" column="B05_USO_COMPRAS_WEB" />
 		<result property="tipoTarjeta" column="B05_TIPO_TARJETA" />
 		<result property="observaciones" column="B05_OBSERVACIONES" />
 		<result property="tipoMoneda" column="B05_TIPO_MONEDA" />

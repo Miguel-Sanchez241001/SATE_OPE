@@ -13,7 +13,7 @@ import pe.bn.com.sate.ope.transversal.util.enums.MotivosBloqueoCuenta;
 import pe.bn.com.sate.ope.transversal.util.enums.MotivosBloqueoTarjeta;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoBusqueda;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoEstadoTarjeta;
-import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjetaNegocio;
 
 public class CambiarEstadoTarjetaModel {
 
@@ -136,7 +136,7 @@ public class CambiarEstadoTarjetaModel {
 	}
 
 	public String descripcionTipoTarjeta(String codigo, String diseno) {
-		return TipoTarjeta.descripcionTipotarjeta(codigo, diseno);
+		return TipoTarjetaNegocio.descripcionTipotarjeta(codigo, diseno);
 	}
 
 	public String descripcionEstadoTarjeta(String codigo) {

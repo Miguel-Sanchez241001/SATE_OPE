@@ -24,6 +24,7 @@ import pe.bn.com.sate.ope.transversal.dto.tablas.Agencia;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
 import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjetaNegocio;
 
 @Controller("solicitarTarjetaController")
 @Scope("view")
@@ -114,7 +115,7 @@ public class SolicitarTarjetaController implements Serializable {
             UsefulWebApplication.mostrarMensajeJSF(
                 ConstantesGenerales.SEVERITY_ERROR,
                 ConstantesGenerales.ERROR_PERSISTENCE_GENERAL,
-                ConstantesGenerales.ERROR_PERSISTENCE_GENERAL);
+                se.getMessage());
         }
     }
 
@@ -163,27 +164,42 @@ public class SolicitarTarjetaController implements Serializable {
      * Busca el tipo de tarjeta según el uso seleccionado (nacional o extranjero).
      */
     public void buscarTipoTarjeta() {
-        if (solicitarTarjetaModel.getTarjeta().getUsoExtranjero()
-                .equals(ConstantesGenerales.USO_EXTRANJERO)) {
-            solicitarTarjetaModel.setListaTipoTarjeta(TipoTarjeta
-                .buscarTipoTarjetaUsoNacional());
-        } else if (solicitarTarjetaModel.getTarjeta().getUsoExtranjero()
-                .equals(ConstantesGenerales.USO_NACIONAL)) {
-            solicitarTarjetaModel.setListaTipoTarjeta(TipoTarjeta
-                .buscarTipoTarjetaUsoNacional());
-        } else {
-            solicitarTarjetaModel.setListaTipoTarjeta(null);
-        }
+ 
+            solicitarTarjetaModel.setListaTipoTarjeta( TipoTarjeta.buscarTipoTarjeta());
+         
     }
-
+    public void buscarTipoTarjetaNegocio() {
+    	
+    	  if (solicitarTarjetaModel.getTipoTarjetaSeleccionada().getCodigoBim().equals(ConstantesGenerales.BIM_BLACK)) {
+              solicitarTarjetaModel.setListaTipoTarjetaNegocio(
+              		TipoTarjetaNegocio.buscarTipoTarjetaBLACK());
+          } else if (solicitarTarjetaModel.getTipoTarjetaSeleccionada().getCodigoBim().equals(ConstantesGenerales.BIM_CORPORATE)) {
+              solicitarTarjetaModel.setListaTipoTarjetaNegocio(
+              		TipoTarjetaNegocio.buscarTipoTarjetaCORP());
+          
+          } else {
+              solicitarTarjetaModel.setListaTipoTarjetaNegocio(null);
+          }
+    	  
+    /*    if (solicitarTarjetaModel.getTarjeta().getUsoExtranjero().equals(ConstantesGenerales.USO_EXTRANJERO)) {
+            solicitarTarjetaModel.setListaTipoTarjetaNegocio(
+            		TipoTarjetaNegocio.buscarTipoTarjetaUsoNacional());
+        } else if (solicitarTarjetaModel.getTarjeta().getUsoExtranjero().equals(ConstantesGenerales.USO_NACIONAL)) {
+            solicitarTarjetaModel.setListaTipoTarjetaNegocio(
+            		TipoTarjetaNegocio.buscarTipoTarjetaUsoNacional());
+        
+        } else {
+            solicitarTarjetaModel.setListaTipoTarjetaNegocio(null);
+        }*/
+    }
     /**
      * Fija el tipo de tarjeta y el diseño seleccionados en el modelo.
      */
     public void fijarTipoTarjetaYDiseno() {
-        solicitarTarjetaModel.getTarjeta().setTipoTarjeta(
-            solicitarTarjetaModel.getTipoTarjetaSeleccionada().getCodigo());
+       solicitarTarjetaModel.getTarjeta().setTipoTarjeta(
+            solicitarTarjetaModel.getTipoTarjetaNegocioSeleccionada().getCodigo());
         solicitarTarjetaModel.getTarjeta().setDiseno(
-            solicitarTarjetaModel.getTipoTarjetaSeleccionada().getDiseno());
+            solicitarTarjetaModel.getTipoTarjetaNegocioSeleccionada().getDiseno());
     }
 
     /**

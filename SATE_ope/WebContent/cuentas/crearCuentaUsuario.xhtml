@@ -171,7 +171,7 @@
 				if (tecla == 8 || tecla == 9 || tecla == 13) {
 					return true;
 				}
-				var patron = /^[a-zA-Z]*$/;
+				var patron = /^[a-zA-Z\s]*$/;
 				var tecla_final = String.fromCharCode(tecla);
 				return patron.test(tecla_final);
 			}

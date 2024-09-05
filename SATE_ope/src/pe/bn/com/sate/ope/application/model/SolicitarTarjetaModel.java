@@ -14,6 +14,7 @@ import pe.bn.com.sate.ope.transversal.util.enums.OperadorMovil;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoDocumento;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoMoneda;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjetaNegocio;
 
 public class SolicitarTarjetaModel {
 
@@ -28,7 +29,15 @@ public class SolicitarTarjetaModel {
 	private List<TipoMoneda> listaTipoMoneda;
 
 	/* Variables del formulario datos de la tarjeta */
+	private List<TipoTarjetaNegocio> listaTipoTarjetaNegocio;
 	private List<TipoTarjeta> listaTipoTarjeta;
+	public List<TipoTarjeta> getListaTipoTarjeta() {
+		return listaTipoTarjeta;
+	}
+
+	public void setListaTipoTarjeta(List<TipoTarjeta> listaTipoTarjeta) {
+		this.listaTipoTarjeta = listaTipoTarjeta;
+	}
 	private List<Ubigeo> departamentos;
 	private List<Ubigeo> provincias;
 	private List<Ubigeo> distritos;
@@ -39,8 +48,16 @@ public class SolicitarTarjetaModel {
 	private boolean esEntregaUE;
 	private boolean esEntregaReferencia;
 	private Tarjeta tarjeta;
+	private TipoTarjetaNegocio tipoTarjetaNegocioSeleccionada;
 	private TipoTarjeta tipoTarjetaSeleccionada;
 
+	public TipoTarjeta getTipoTarjetaSeleccionada() {
+		return tipoTarjetaSeleccionada;
+	}
+
+	public void setTipoTarjetaSeleccionada(TipoTarjeta tipoTarjetaSeleccionada) {
+		this.tipoTarjetaSeleccionada = tipoTarjetaSeleccionada;
+	}
 	private int pasoActual;
 
 	private List<EstadoCivil> listaEstadoCivil;
@@ -154,12 +171,12 @@ public class SolicitarTarjetaModel {
 		this.listaOperadorMovil = listaOperadorMovil;
 	}
 
-	public List<TipoTarjeta> getListaTipoTarjeta() {
-		return listaTipoTarjeta;
+	public List<TipoTarjetaNegocio> getListaTipoTarjetaNegocio() {
+		return listaTipoTarjetaNegocio;
 	}
 
-	public void setListaTipoTarjeta(List<TipoTarjeta> listaTipoTarjeta) {
-		this.listaTipoTarjeta = listaTipoTarjeta;
+	public void setListaTipoTarjetaNegocio(List<TipoTarjetaNegocio> listaTipoTarjeta) {
+		this.listaTipoTarjetaNegocio = listaTipoTarjeta;
 	}
 
 	public boolean isEsEntregaBN() {
@@ -222,7 +239,6 @@ public class SolicitarTarjetaModel {
 		tarjeta = new Tarjeta();
 		tarjeta.setTipoMoneda(TipoMoneda.MONEDA_SOLES.getId());
 		tarjeta.setEntregaUbicacion("4");
-		tarjeta.setPorcentajeDisposicionEfectivo(ConstantesGenerales.PORCENTAJE_EFECTIVO);
 		
 		clienteSeleccionado = new Cliente();
 		listaOperadorMovil = Arrays.asList(OperadorMovil.values());
@@ -240,7 +256,7 @@ public class SolicitarTarjetaModel {
 		distritos = null;
 		agenciasBN = null;
 		agenciaSeleccionada = null;
-		tipoTarjetaSeleccionada = null;
+		tipoTarjetaNegocioSeleccionada = null;
 		pasoActual = 0;
 	}
 	public void reiniciarDatosCliente() {
@@ -280,12 +296,12 @@ public class SolicitarTarjetaModel {
 		this.pasoActual = pasoActual;
 	}
 
-	public TipoTarjeta getTipoTarjetaSeleccionada() {
-		return tipoTarjetaSeleccionada;
+	public TipoTarjetaNegocio getTipoTarjetaNegocioSeleccionada() {
+		return tipoTarjetaNegocioSeleccionada;
 	}
 
-	public void setTipoTarjetaSeleccionada(TipoTarjeta tipoTarjetaSeleccionada) {
-		this.tipoTarjetaSeleccionada = tipoTarjetaSeleccionada;
+	public void setTipoTarjetaNegocioSeleccionada(TipoTarjetaNegocio tipoTarjetaNegocioSeleccionada) {
+		this.tipoTarjetaNegocioSeleccionada = tipoTarjetaNegocioSeleccionada;
 	}
 
 	public boolean esTipoDocumentoDNI() {

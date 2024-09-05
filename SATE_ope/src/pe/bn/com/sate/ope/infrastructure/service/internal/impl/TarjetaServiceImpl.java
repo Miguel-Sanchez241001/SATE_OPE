@@ -23,9 +23,10 @@ import pe.bn.com.sate.ope.transversal.dto.sate.SolicitudTarjeta;
 import pe.bn.com.sate.ope.transversal.dto.sate.Tarjeta;
 import pe.bn.com.sate.ope.transversal.dto.sate.TarjetaResumen;
 import pe.bn.com.sate.ope.transversal.util.UsefulWebApplication;
+import pe.bn.com.sate.ope.transversal.util.constantes.ExceptionConstants;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoBusqueda;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoEstadoTarjeta;
-import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjetaNegocio;
 
 @Service
 public class TarjetaServiceImpl implements TarjetaService {
@@ -394,19 +395,19 @@ public class TarjetaServiceImpl implements TarjetaService {
 	public String verificarTarjetasDisponible(String tipoDocumento,
 			String nroDocuemnto, Tarjeta tarjeta) {
 	    String ruc = SecurityContextFacade.getAuthenticatedUser().getRuc();
-	    TipoTarjeta typeTarActual = TipoTarjeta.fromCodigoYDiseno(tarjeta.getTipoTarjeta(), tarjeta.getDiseno());
+	    TipoTarjetaNegocio typeTarActual = TipoTarjetaNegocio.fromCodigoYDiseno(tarjeta.getTipoTarjeta(), tarjeta.getDiseno());
 	   
 	    List<Tarjeta> tarjetasDelCliente = tarjetaMapper.buscarTarjetaPorTipoDocumento
 	    		(tipoDocumento,nroDocuemnto , ruc);
 		
 	    if (existeEnListaTarjetas(typeTarActual,tarjetasDelCliente)) {
-	        return "El solicitante ya tiene asignada una tarjeta empresarial del mismo tipo en la unidad ejecutora o empresa.";
+	        return ExceptionConstants.TARJETA_NO_VALID ;
 	    }
 		
 		return null;
 	}
 
-	private boolean existeEnListaTarjetas(TipoTarjeta typeTarActual, List<Tarjeta> tarjetasDelCliente) {
+	private boolean existeEnListaTarjetas(TipoTarjetaNegocio typeTarActual, List<Tarjeta> tarjetasDelCliente) {
 
 	    if (typeTarActual == null) {
 	        return false; // Si el tipo de tarjeta actual no es válido, no se puede hacer la verificación.
@@ -415,14 +416,14 @@ public class TarjetaServiceImpl implements TarjetaService {
 	    // Recorrer la lista de tarjetas existentes del cliente
 	    for (Tarjeta tarjetaExistente : tarjetasDelCliente) {
 	        // Obtener el tipo de tarjeta de cada tarjeta existente
-	        TipoTarjeta tipoTarjetaExistente = TipoTarjeta.fromCodigoYDiseno(tarjetaExistente.getTipoTarjeta(), tarjetaExistente.getDiseno());
+	        TipoTarjetaNegocio tipoTarjetaExistente = TipoTarjetaNegocio.fromCodigoYDiseno(tarjetaExistente.getTipoTarjeta(), tarjetaExistente.getDiseno());
 	        // Verificar si el estado de la tarjeta es activada, bloqueada o cancelada
 	        boolean tarjetaActiva = TipoEstadoTarjeta.TARJETA_ACTIVADA.getCod().equals(tarjetaExistente.getEstado()) ||
 	                                TipoEstadoTarjeta.TARJETA_BLOQUEADA.getCod().equals(tarjetaExistente.getEstado()) ||
 	                                TipoEstadoTarjeta.TARJETA_CANCELADA.getCod().equals(tarjetaExistente.getEstado());
 
 	        // Comparar si coinciden el tipo de tarjeta y el diseño
-	        if (typeTarActual.equals(tipoTarjetaExistente) && tarjetaActiva    ) {
+	        if (typeTarActual.getDiseno().equals(tipoTarjetaExistente.getDiseno()) && tarjetaActiva    ) {
 	            return true; // Ya existe una tarjeta del mismo tipo y diseño
 	        }
 	    }

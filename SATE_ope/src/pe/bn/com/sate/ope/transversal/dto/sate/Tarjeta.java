@@ -2,6 +2,8 @@ package pe.bn.com.sate.ope.transversal.dto.sate;
 
 import java.util.Date;
 
+import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
+
 public class Tarjeta {
 	private Long id;
 	private Long idEmpresa;
@@ -14,6 +16,15 @@ public class Tarjeta {
 
 	private String usoDispocionEfectivo;
 	private String usoExtranjero;
+	private String usoComprasWeb;
+	public String getUsoComprasWeb() {
+		return usoComprasWeb;
+	}
+
+	public void setUsoComprasWeb(String usoComprasWeb) {
+		this.usoComprasWeb = usoComprasWeb;
+	}
+
 	private String tipoTarjeta;
 	private String diseno;
 	private String observaciones;
@@ -169,6 +180,11 @@ public class Tarjeta {
 	}
 
 	public void setUsoDispocionEfectivo(String usoDispocionEfectivo) {
+		if (usoDispocionEfectivo.equals("T")) {
+			setPorcentajeDisposicionEfectivo(ConstantesGenerales.PORCENTAJE_EFECTIVO);
+		}else{
+			setPorcentajeDisposicionEfectivo("00000");
+		}
 		this.usoDispocionEfectivo = usoDispocionEfectivo;
 	}
 

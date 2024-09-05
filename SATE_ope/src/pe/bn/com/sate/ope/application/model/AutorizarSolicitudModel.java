@@ -14,7 +14,7 @@ import pe.bn.com.sate.ope.transversal.util.constantes.ConstantesGenerales;
 import pe.bn.com.sate.ope.transversal.util.enums.CodDocumentoWebservice;
 import pe.bn.com.sate.ope.transversal.util.enums.DisposicionEfectivo;
 import pe.bn.com.sate.ope.transversal.util.enums.TipoEstadoTarjeta;
-import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjeta;
+import pe.bn.com.sate.ope.transversal.util.enums.TipoTarjetaNegocio;
 
 public class AutorizarSolicitudModel {
 
@@ -52,8 +52,8 @@ public class AutorizarSolicitudModel {
 	}
 
 	public String descripcionTipoTarjeta(String codigo, String diseno) {
-		System.out.println(codigo+" - "+ diseno);
-		return TipoTarjeta.descripcionTipotarjeta(codigo, diseno);
+
+		return TipoTarjetaNegocio.descripcionTipotarjeta(codigo, diseno);
 	}
 
 	public String descripcionEstadoTarjeta(String codigo) {
